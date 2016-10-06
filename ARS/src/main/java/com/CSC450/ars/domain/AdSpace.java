@@ -20,13 +20,16 @@ public class AdSpace {
 		setContainingPage(containingPage);
 		setFocusRatio(focusRatio);
 		setActiveRatio(activeRatio);
+		setTimeSpent(timeSpent);
 	}
 	
 	private long containingPage;
 	private long timeSpent;
 	private long focusRatio;
 	private long activeRatio;
-	
+
+    public AdSpace() {}
+
 	public long getId() {
 		return id;
 	}
