@@ -53,5 +53,16 @@ public class HomeController {
 		adSpaceDataAccessor.save(adSpace);
 		return "redirect:/";
 	}
+
+	@RequestMapping(value = "/database", method = RequestMethod.GET)
+	public String database_control(){
+        return "database_commands";
+    }
+
+	@RequestMapping(value = "/database/update", method = RequestMethod.POST)
+	public String update_from_remote(){
+
+        return "redirect:/";
+    }
 	
 }
