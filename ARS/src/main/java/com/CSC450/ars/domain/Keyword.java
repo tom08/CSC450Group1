@@ -12,7 +12,7 @@ public class Keyword {
 	@Id
 	@GeneratedValue
 	private long id;
-	private String name;
+	private String keywordName;
 	
 	public long getId() {
 		return id;
@@ -20,11 +20,11 @@ public class Keyword {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getName() {
-		return name;
+	public String getKeywordName() {
+		return keywordName;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setKeywordName(String name) {
+		this.keywordName = name;
 	}
 	
 }

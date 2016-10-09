@@ -14,9 +14,9 @@ public class AdLocationVisit {
 	private long id;
 	private double focusRatio;
 	private double activeRatio;
-	private long totalTime;
+	private double totalSpent;
 	private long pageVisitId;
-	private String locationOnPage;
+	private String pageLocation;
 	
 	public long getId() {
 		return id;
@@ -36,11 +36,11 @@ public class AdLocationVisit {
 	public void setActiveRatio(double activeRatio) {
 		this.activeRatio = activeRatio;
 	}
-	public long getTotalTime() {
-		return totalTime;
+	public double getTotalSpent() {
+		return totalSpent;
 	}
-	public void setTotalTime(long totalTime) {
-		this.totalTime = totalTime;
+	public void setTotalSpent(double totalTime) {
+		this.totalSpent = totalSpent;
 	}
 	public long getPageVisitId() {
 		return pageVisitId;
@@ -48,10 +48,10 @@ public class AdLocationVisit {
 	public void setPageVisitId(long pageVisitId) {
 		this.pageVisitId = pageVisitId;
 	}
-	public String getLocationOnPage() {
-		return locationOnPage;
+	public String getPageLocation() {
+		return pageLocation;
 	}
-	public void setLocationOnPage(String locationOnPage) {
-		this.locationOnPage = locationOnPage;
+	public void setPageLocation(String pageLocation) {
+		this.pageLocation = pageLocation;
 	}
 }
