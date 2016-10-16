@@ -13,8 +13,6 @@ public class AdSpace {
 	@GeneratedValue
 	private long id;
 	
-	public AdSpace() {}
-	
 	public AdSpace(long id, long containingPage, long timeSpent, long focusRatio, long activeRatio) {
 		setId(id);
 		setContainingPage(containingPage);
