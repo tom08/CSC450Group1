@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.CSC450.ars.domain.AdSpace;
-import com.CSC450.dao.impl.AdSpaceDaoImpl;
+import com.CSC450.ars.domain.Page;
+import com.CSC450.dao.impl.PageDao;
 
 /**
  * Handles requests for the application home page.
@@ -26,7 +26,7 @@ public class HomeController {
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	
-	private AdSpaceDaoImpl adSpaceDataAccessor = new AdSpaceDaoImpl();
+	private PageDao pageDao = new PageDao();
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -34,8 +34,8 @@ public class HomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 		logger.info("Welcome home! The client locale is {}.", locale);
-		model.addAttribute("adSpace", new AdSpace());
-		model.addAttribute("adSpaces", adSpaceDataAccessor.getAll());
+		model.addAttribute("page", new Page());
+		model.addAttribute("pages", pageDao.getAll());
 		
 		
 		Date date = new Date();
@@ -48,9 +48,9 @@ public class HomeController {
 		return "home";
 	}
 	
-	@RequestMapping(value = "/save_ad_space", method = RequestMethod.POST)
-	public String saveAdSpace(Model model, @ModelAttribute("adSpace") AdSpace adSpace, BindingResult bindingResult) {
-		adSpaceDataAccessor.save(adSpace);
+	@RequestMapping(value = "/save_page", method = RequestMethod.POST)
+	public String saveAdSpace(Model model, @ModelAttribute("page") Page page, BindingResult bindingResult) {
+		pageDao.save(page);
 		return "redirect:/";
 	}
 
