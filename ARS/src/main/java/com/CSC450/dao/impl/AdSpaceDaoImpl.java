@@ -34,7 +34,7 @@ public class AdSpaceDaoImpl implements AdSpaceDao{
 	@Transactional
 	public void save(AdSpace adSpace) {
 		entityManager.getTransaction().begin();
-		entityManager.persist(adSpace);
+		entityManager.merge(adSpace);
 		entityManager.getTransaction().commit();
 	}
 }

@@ -13,11 +13,23 @@ public class AdSpace {
 	@GeneratedValue
 	private long id;
 	
+	public AdSpace() {}
+	
+	public AdSpace(long id, long containingPage, long timeSpent, long focusRatio, long activeRatio) {
+		setId(id);
+		setContainingPage(containingPage);
+		setFocusRatio(focusRatio);
+		setActiveRatio(activeRatio);
+		setTimeSpent(timeSpent);
+	}
+	
 	private long containingPage;
 	private long timeSpent;
 	private long focusRatio;
 	private long activeRatio;
-	
+
+    public AdSpace() {}
+
 	public long getId() {
 		return id;
 	}
