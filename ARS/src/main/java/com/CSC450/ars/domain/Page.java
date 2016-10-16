@@ -13,6 +13,13 @@ public class Page {
 	@GeneratedValue
 	private long id;
 	private String url;
+
+	public Page(){}
+
+	public Page(long pg_id, String pg_url){
+        setId(pg_id);
+        setUrl(pg_url);
+    }
 	
 	public long getId() {
 		return id;

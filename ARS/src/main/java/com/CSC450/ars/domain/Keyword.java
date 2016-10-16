@@ -13,6 +13,13 @@ public class Keyword {
 	@GeneratedValue
 	private long id;
 	private String keywordName;
+
+	public Keyword() {}
+
+	public Keyword(long k_id, String name){
+        setId(k_id);
+        setKeywordName(name);
+    }
 	
 	public long getId() {
 		return id;
