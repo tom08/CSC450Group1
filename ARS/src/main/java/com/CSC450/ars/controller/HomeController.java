@@ -3,6 +3,7 @@ package com.CSC450.ars.controller;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.CSC450.support.UpdateClient;
 
 import com.CSC450.ars.domain.Page;
 import com.CSC450.dao.impl.PageDao;
@@ -61,7 +64,13 @@ public class HomeController {
 
 	@RequestMapping(value = "/database/update", method = RequestMethod.POST)
 	public String update_from_remote(){
-
+        UpdateClient updater = new UpdateClient();
+        try{
+            updater.connectToServer();
+        }
+        catch(IOException e){
+            String error = "ERROR";
+        }
         return "redirect:/";
     }
 	

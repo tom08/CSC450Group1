@@ -15,7 +15,7 @@ public class AdLocationVisit {
 	private double focusRatio;
 	private double activeRatio;
 	private double totalSpent;
-	private long pageVisitId;
+	private long pageId;
 	private String pageLocation;
 	
 	public long getId() {
@@ -43,10 +43,10 @@ public class AdLocationVisit {
 		this.totalSpent = totalSpent;
 	}
 	public long getPageVisitId() {
-		return pageVisitId;
+		return pageId;
 	}
-	public void setPageVisitId(long pageVisitId) {
-		this.pageVisitId = pageVisitId;
+	public void setPageVisitId(long pageId) {
+		this.pageId = pageId;
 	}
 	public String getPageLocation() {
 		return pageLocation;
