@@ -24,34 +24,21 @@ import com.CSC450.dao.impl.PageDao;
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-	
-	
 	private PageDao pageDao = new PageDao();
-	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
-		logger.info("Welcome home! The client locale is {}.", locale);
-		model.addAttribute("page", new Page());
-		model.addAttribute("pages", pageDao.getAll());
-		
-		
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		
-		String formattedDate = dateFormat.format(date);
-		
-		model.addAttribute("serverTime", formattedDate );
+	public String home(Model model) {
 		
 		return "home";
 	}
 	
-	@RequestMapping(value = "/save_page", method = RequestMethod.POST)
-	public String saveAdSpace(Model model, @ModelAttribute("page") Page page, BindingResult bindingResult) {
-		pageDao.save(page);
-		return "redirect:/";
+	@RequestMapping(value="/test-page", method=RequestMethod.GET)
+	public String testPage(Model model) {
+		model.addAttribute("page", new Page());
+		return "page";
 	}
+	
 	
 }
