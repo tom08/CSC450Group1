@@ -6,6 +6,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.NoResultException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,5 +36,16 @@ private EntityManagerFactory emFactory;
 		entityManager.getTransaction().begin();
 		entityManager.merge(alv);
 		entityManager.getTransaction().commit();
+	}
+
+	@Transactional
+	public AdLocationVisit getById(long id){
+		TypedQuery<AdLocationVisit> query = entityManager.createQuery("SELECT p FROM AdLocationVisit p WHERE p.id = :id", AdLocationVisit.class);
+		try{
+            return query.setParameter("id", id).getSingleResult();
+        }
+        catch(NoResultException e){
+            return null;
+        }
 	}
 }

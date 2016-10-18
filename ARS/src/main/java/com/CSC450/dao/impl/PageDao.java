@@ -7,6 +7,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.NoResultException;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +39,12 @@ public class PageDao {
 	@Transactional
 	public Page getById(long id){
 		TypedQuery<Page> query = entityManager.createQuery("SELECT p FROM Page p WHERE p.id = :id", Page.class);
-		return query.setParameter("id", id).getSingleResult();
+		try{
+            return query.setParameter("id", id).getSingleResult();
+        }
+        catch (NoResultException e){
+            return null;
+        }
 	}
 	
 }
