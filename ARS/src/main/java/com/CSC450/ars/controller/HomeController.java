@@ -69,7 +69,7 @@ public class HomeController {
             updater.connectToServer();
         }
         catch(IOException e){
-            String error = "ERROR";
+            return "redirect:/database";
         }
         return "redirect:/";
     }

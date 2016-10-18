@@ -27,25 +27,31 @@ public class UpdateClient {
     }
 
     private void saveKeyword(String[] data){
-        Keyword kwd = new Keyword(Long.parseLong(data[0]), data[1]);
-        keywordDao.save(kwd);
+        if(keywordDao.getById(Long.parseLong(data[0])) == null){
+            Keyword kwd = new Keyword(Long.parseLong(data[0]), data[1]);
+            keywordDao.save(kwd);
+        }
     }
 
     private void savePage(String[] data){
-        Page page = new Page(Long.parseLong(data[0]), data[1]);
-		pageDao.save(page);
+        if(pageDao.getById(Long.parseLong(data[0])) == null){
+            Page page = new Page(Long.parseLong(data[0]), data[1]);
+            pageDao.save(page);
+        }
     }
 
     private void saveAdLocationVisit(String[] data){
-        AdLocationVisit visit = new AdLocationVisit(
-                Long.parseLong(data[0]),
-                Double.parseDouble(data[2]),
-                Double.parseDouble(data[3]),
-                Double.parseDouble(data[4]),
-                Long.parseLong(data[5]),
-                data[1]
-                );
-        adLocationVisitDao.save(visit);
+        if(adLocationVisitDao.getById(Long.parseLong(data[0])) == null){
+            AdLocationVisit visit = new AdLocationVisit(
+                    Long.parseLong(data[0]),
+                    Double.parseDouble(data[2]),
+                    Double.parseDouble(data[3]),
+                    Double.parseDouble(data[4]),
+                    Long.parseLong(data[5]),
+                    data[1]
+                    );
+            adLocationVisitDao.save(visit);
+        }
     }
 
     public void connectToServer() throws IOException {
