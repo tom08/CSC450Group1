@@ -10,6 +10,7 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.CSC450.ars.domain.Keyword;
 import com.CSC450.ars.domain.Page;
 
 public class PageDao {
@@ -29,11 +30,19 @@ public class PageDao {
 	}
 	
 	@Transactional
-	public void save(Page word){
+	public void save(Page page){
 		entityManager.getTransaction().begin();
-		entityManager.merge(word);
+		entityManager.merge(page);
 		entityManager.getTransaction().commit();
 	}
+	
+	@Transactional
+	public void deleteById(long pageId) {
+		entityManager.getTransaction().begin();
+		entityManager.createQuery("DELETE FROM Page p WHERE p.id = :id").setParameter("id", pageId).executeUpdate();
+		entityManager.getTransaction().commit();
+	}
+
 	
 	@Transactional
 	public Page getById(long id){
