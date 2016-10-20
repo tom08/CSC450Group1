@@ -50,7 +50,7 @@ public class HomeController {
 	
 	@RequestMapping(value="save_page", method=RequestMethod.POST)
 	public String savePage(Model model, @ModelAttribute("page") Page page, BindingResult result) {
-		System.out.println(page.getKeywords());
+		page.setKeywords(keywordDao.getAll());
 		pageDao.save(page);
 		return "redirect:/";
 	}

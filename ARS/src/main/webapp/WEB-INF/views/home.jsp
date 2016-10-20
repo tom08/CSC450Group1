@@ -1,29 +1,31 @@
 <%@include file="stdLayout.jsp" %>
 <%@ page session="false" %>
 
-<table class="table table-bordered">
-	<thead>
-		<tr>
-			<th>Page URL</th>
-			<th>Keywords</th>
-			<th>Delete</th>
-		</tr>
-	</thead>
-	
-	<tbody>
-		<c:forEach items="${pages}" var="page">
+<div class="container">
+	<table class="table table-bordered">
+		<thead>
 			<tr>
-				<td>${page.url}</td>
-				<td><c:forEach items="${page.keywords}" var="keyword">
-					<span>${keyword.keywordName}</span>
-				</c:forEach></td>
-				<td><button onclick="deletePage(${page.id})" class="btn btn-default glyphicon glyphicon-remove-circle"></button></td>
+				<th>Page URL</th>
+				<th>Keywords</th>
+				<th>Delete</th>
 			</tr>
-		</c:forEach>
-	</tbody>
+		</thead>
+		
+		<tbody>
+			<c:forEach items="${pages}" var="page">
+				<tr>
+					<td>${page.url}</td>
+					<td><c:forEach items="${page.keywords}" var="keyword">
+						<span>${keyword.keywordName}</span>
+					</c:forEach></td>
+					<td><button onclick="deletePage(${page.id})" class="btn btn-default glyphicon glyphicon-remove-circle"></button></td>
+				</tr>
+			</c:forEach>
+		</tbody>
+	
+	</table>
 
-</table>
-
+</div>
 <form method="post" action="" id="deletePage">
 </form>
 
