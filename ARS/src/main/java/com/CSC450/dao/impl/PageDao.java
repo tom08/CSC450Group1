@@ -7,11 +7,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 import javax.persistence.NoResultException;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import com.CSC450.ars.domain.Page;
+import com.CSC450.ars.domain.Keyword;
 
 public class PageDao {
 	private EntityManagerFactory emFactory;
@@ -46,5 +48,6 @@ public class PageDao {
             return null;
         }
 	}
-	
+
+
 }

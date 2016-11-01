@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.List;
 
 import com.CSC450.ars.domain.Page;
 import com.CSC450.dao.impl.PageDao;
@@ -54,6 +55,25 @@ public class UpdateClient {
         }
     }
 
+    private void saveRelationship(String[] data){
+        long page_id = Long.parseLong(data[1]);
+        long keyword_id = Long.parseLong(data[0]);
+        Page page = pageDao.getById(page_id);
+        Keyword keyword = keywordDao.getById(keyword_id);
+        List<Keyword> keywords = page.getKeywords();
+        boolean exists = false;
+        if(keywords != null && !keywords.isEmpty()){
+            for(int i = 0; i < keywords.size(); i++){
+                if(keywords.get(i).getId() == keyword_id)
+                    exists = true;
+            }
+        }
+        if(!exists && keyword != null && page != null){
+            page.addKeyword(keyword);
+            pageDao.save(page);
+        }
+    }
+
     public void connectToServer() throws IOException {
 
         Socket socket = new Socket(address, 12000);
@@ -83,6 +103,9 @@ public class UpdateClient {
             }
             else if(type.equals("KEY")){
                 saveKeyword(data);
+            }
+            else if(type.equals("KPR")){
+                saveRelationship(data);
             }
         }
     }

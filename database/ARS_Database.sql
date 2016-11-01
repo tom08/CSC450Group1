@@ -21,12 +21,12 @@ CREATE TABLE adData.keyword(
 	keyword_name varchar(128)
 );
 
-CREATE TABLE adData.keyword_page(
-	keyword_id bigint,
-	page_id bigint,
-	FOREIGN KEY(page_id)
+CREATE TABLE adData.page_keywords(
+	keywords bigint,
+	page bigint,
+	FOREIGN KEY(page)
 		REFERENCES page(id),
-	FOREIGN KEY(keyword_id)
+	FOREIGN KEY(keywords)
 		REFERENCES keyword(id),
-	PRIMARY KEY(keyword_id, page_id)
+	PRIMARY KEY(keywords, page)
 );
