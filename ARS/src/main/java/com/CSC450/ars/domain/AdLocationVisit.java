@@ -57,7 +57,7 @@ public class AdLocationVisit {
 		return totalSpent;
 	}
 	public void setTotalSpent(double totalTime) {
-		this.totalSpent = totalSpent;
+		this.totalSpent = totalTime;
 	}
 	public long getPageId() {
 		return pageId;
