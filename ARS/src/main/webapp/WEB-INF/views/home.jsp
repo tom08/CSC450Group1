@@ -6,11 +6,11 @@
 </head>
 <body>
     <c:if test="${needs_update}">
-        <div style="color:red;">
-            <p>
-                Your data is more than 2 Hours old.<br/>
-                Click <a href="database">here</a> to update!
-            </p>
+        <div class="alert alert-danger">
+            Your data is more than 2 Hours old.
+            <form:form method="POST" action="database/update">
+                <input type="submit" value="Update"/>
+            </form:form>
         </div>
     </c:if>
 <h1>
