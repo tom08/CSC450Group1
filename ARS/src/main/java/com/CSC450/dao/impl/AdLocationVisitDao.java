@@ -1,6 +1,7 @@
 package com.CSC450.dao.impl;
 
 import java.util.List;
+import java.lang.IndexOutOfBoundsException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -45,6 +46,20 @@ private EntityManagerFactory emFactory;
             return query.setParameter("id", id).getSingleResult();
         }
         catch(NoResultException e){
+            return null;
+        }
+	}
+
+	@Transactional
+	public AdLocationVisit getLatest(){
+		TypedQuery<AdLocationVisit> query = entityManager.createQuery("SELECT p FROM AdLocationVisit p ORDER BY p.createdAt DESC", AdLocationVisit.class);
+		try{
+            return query.getResultList().get(0);
+        }
+        catch(NoResultException e){
+            return null;
+        }
+        catch(IndexOutOfBoundsException e){
             return null;
         }
 	}

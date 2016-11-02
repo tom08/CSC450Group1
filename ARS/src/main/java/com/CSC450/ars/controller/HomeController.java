@@ -2,8 +2,12 @@ package com.CSC450.ars.controller;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.ZoneId;
 import java.util.Locale;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.CSC450.support.UpdateClient;
 
 import com.CSC450.ars.domain.Page;
+import com.CSC450.ars.domain.AdLocationVisit;
 import com.CSC450.dao.impl.PageDao;
+import com.CSC450.dao.impl.AdLocationVisitDao;
 
 /**
  * Handles requests for the application home page.
@@ -30,6 +36,7 @@ public class HomeController {
 	
 	
 	private PageDao pageDao = new PageDao();
+	private AdLocationVisitDao adLocationDao = new AdLocationVisitDao();
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -39,6 +46,20 @@ public class HomeController {
 		logger.info("Welcome home! The client locale is {}.", locale);
 		model.addAttribute("page", new Page());
 		model.addAttribute("pages", pageDao.getAll());
+		AdLocationVisit last_ad = adLocationDao.getLatest();
+		if(last_ad == null)
+            model.addAttribute("needs_update", true);
+        else{
+            java.util.Date last_updated_date = last_ad.getCreatedAt();
+            LocalDateTime last_updated = LocalDateTime.ofInstant(last_updated_date.toInstant(), ZoneId.systemDefault());
+            Duration time_since_update = Duration.between(last_updated, LocalDateTime.now());
+            if(time_since_update.toMinutes() > 120){
+                model.addAttribute("needs_update", true);
+            }
+            else{
+                model.addAttribute("needs_update", false);
+            }
+        }
 		
 		
 		Date date = new Date();

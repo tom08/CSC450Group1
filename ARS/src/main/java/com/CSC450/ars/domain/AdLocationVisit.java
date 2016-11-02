@@ -1,9 +1,14 @@
 package com.CSC450.ars.domain;
 
+import java.util.Date;
+import java.time.LocalDateTime;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Column;
 
 @Entity
 @Table(name = "ad_location_visit")
@@ -17,6 +22,9 @@ public class AdLocationVisit {
 	private double totalSpent;
 	private long pageId;
 	private String pageLocation;
+	@Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at", insertable = false)
+	private java.util.Date createdAt;
 
 	public AdLocationVisit() {}
 
@@ -71,4 +79,7 @@ public class AdLocationVisit {
 	public void setPageLocation(String pageLocation) {
 		this.pageLocation = pageLocation;
 	}
+	public java.util.Date getCreatedAt(){
+        return createdAt;
+    }
 }

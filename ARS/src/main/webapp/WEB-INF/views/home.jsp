@@ -5,6 +5,14 @@
 	<title>Home</title>
 </head>
 <body>
+    <c:if test="${needs_update}">
+        <div style="color:red;">
+            <p>
+                Your data is more than 2 Hours old.<br/>
+                Click <a href="database">here</a> to update!
+            </p>
+        </div>
+    </c:if>
 <h1>
 	ARS Test Page (home.jsp)
 </h1>
