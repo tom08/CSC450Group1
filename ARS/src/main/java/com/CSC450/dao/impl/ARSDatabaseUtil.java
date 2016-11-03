@@ -15,6 +15,10 @@ public class ARSDatabaseUtil {
 	private static String USERNAME = "ars";
 	private static String PASSWORD = "password";
 	
+	public static String AD_LOCATION_VISIT = "ad_location_visit";
+	public static String PAGE = "page";
+	public static String KEYWORD = "keyword";
+	
 	public static Connection getConnection() throws SQLException {
 		return DriverManager.getConnection(URL, USERNAME, PASSWORD);
 	}
@@ -27,7 +31,7 @@ public class ARSDatabaseUtil {
 		adVL.setTotalSpent(rs.getDouble("total_spent"));
 		adVL.setPageId(rs.getLong("page_id"));
 		adVL.setPageLocation(rs.getString("page_location"));
-		adVL.setKeywordId(rs.getLong("keyword_id"));
+		adVL.setCreatedAt(rs.getTimestamp("created_at"));
 		return adVL;
 	}
 	

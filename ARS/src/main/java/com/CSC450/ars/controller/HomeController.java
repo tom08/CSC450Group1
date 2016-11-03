@@ -39,13 +39,17 @@ public class HomeController {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Model model) throws SQLException {
-		model.addAttribute("adLVs", adLVDao.getAll());
+		model.addAttribute("pages", pageDao.getAll());
 		return "home";
 	}
 	
-	@RequestMapping(value="/test-page", method=RequestMethod.GET)
-	public String testPage(Model model) {
-		model.addAttribute("page", new Page());
+	@RequestMapping(value="test_page/{pageId}", method=RequestMethod.GET)
+	public String testPage(Model model, @PathVariable long pageId) throws SQLException {
+		Page page = new Page();
+		if(pageId > 0) {
+			page = pageDao.getById(pageId);
+		}
+		model.addAttribute("page", page);
 		return "page";
 	}
 	
@@ -62,10 +66,20 @@ public class HomeController {
 		return "redirect:/";
 	}*/
 	
-	@RequestMapping(value="/test-ad-location-visit", method=RequestMethod.GET)
-	public String testAdLocationVisit(Model model) {
-		model.addAttribute("adLocationVisit", new AdLocationVisit());
+	@RequestMapping(value="/test_ad_location_visit/{adLVId}", method=RequestMethod.GET)
+	public String testAdLocationVisit(Model model, @PathVariable long adLVId) throws SQLException {
+		AdLocationVisit adLV = new AdLocationVisit();
+		if(adLVId > 0) {
+			adLV = adLVDao.getById(adLVId);
+		}
+		model.addAttribute("adLocationVisit", adLV);
 		return "ad_location_visit";
+	}
+	
+	@RequestMapping(value="/view_latest_adLocation", method=RequestMethod.GET)
+	public String viewLatest(Model model) throws SQLException {
+		model.addAttribute("adLV", adLVDao.getLatest());
+		return "view_latest";
 	}
 	
 	@RequestMapping(value="save_ad_location_visit", method=RequestMethod.POST)

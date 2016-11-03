@@ -12,10 +12,11 @@
 		</thead>
 		
 		<tbody>
-			<c:forEach items="${adLVs}" var="adLV">
+			<c:forEach items="${pages}" var="page">
 				<tr>
-					<td>${adLV.id}</td>
-					<td><button onclick="deletePage(${adLV.id})" class="btn btn-default glyphicon glyphicon-remove-circle"></button></td>
+					<td>${page.url}</td>
+					<td><button onclick="updatePage(${page.id})" class="btn btn-default glyphicon glyphicon-remove-circle"></button></td>
+					<td><a href="test_page/${page.id}" class="btn btn-default glyphicon glyphicon-remove-circle"></a></td>
 				</tr>
 			</c:forEach>
 		</tbody>

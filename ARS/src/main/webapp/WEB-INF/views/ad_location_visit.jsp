@@ -4,7 +4,7 @@
 <div class="container">
 	<h1 class="underline">Add Test Ad Location Visit</h1>
 	
-	<form:form method="POST" action="save_ad_location_visit" modelAttribute="adLocationVisit">
+	<form:form method="POST" action="/ars/save_ad_location_visit" modelAttribute="adLocationVisit">
 		<form:label path="pageId">Page Id:<form:input class="form-control" path="pageId"/></form:label><br>
 	    <form:label path="pageLocation">Page Location:<form:input class="form-control" path="pageLocation"/></form:label><br>
 	    <form:label path="totalSpent">Total Time Spent:<form:input class="form-control" path="totalSpent"/></form:label><br>

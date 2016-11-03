@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -27,7 +29,7 @@ public class AdLocationVisitDao {
 	public List<AdLocationVisit> getAll() throws SQLException {
 		List<AdLocationVisit> adLVs = new ArrayList<AdLocationVisit>();
 		conn = ARSDatabaseUtil.getConnection();
-		query = "select id, focus_ratio, active_ratio, total_spent, page_id, page_location, keyword_id from ad_location_visit";
+		query = "select * from " + ARSDatabaseUtil.AD_LOCATION_VISIT;
 		stmt = conn.prepareStatement(query);
 		ResultSet rs = stmt.executeQuery();
 		while(rs.next()) {
@@ -39,7 +41,7 @@ public class AdLocationVisitDao {
 	
 	public void save(AdLocationVisit adLV) throws SQLException {
 		conn = ARSDatabaseUtil.getConnection();
-		query = "insert into ad_location_visit values(?,?,?,?,?,?,?)";
+		query = "insert into " + ARSDatabaseUtil.AD_LOCATION_VISIT + " values(?,?,?,?,?,?,?)";
 		stmt = conn.prepareStatement(query);
 		stmt.setLong(1, adLV.getId());
 		stmt.setString(2, adLV.getPageLocation());
@@ -47,8 +49,35 @@ public class AdLocationVisitDao {
 		stmt.setDouble(4, adLV.getActiveRatio());
 		stmt.setDouble(5, adLV.getTotalSpent());
 		stmt.setLong(6, adLV.getPageId());
-		stmt.setLong(7, adLV.getKeywordId());
+		stmt.setTimestamp(7, new Timestamp(new Date().getTime()));
 		stmt.execute();
+	}
+	
+	public AdLocationVisit getById(long id) throws SQLException {
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select * from " + ARSDatabaseUtil.AD_LOCATION_VISIT + " where id = ?";
+		stmt = conn.prepareStatement(query);
+		stmt.setLong(1, id);
+		ResultSet rs = stmt.executeQuery();
+		
+		AdLocationVisit adLV = null;
+		if(rs.next()) {
+			adLV = ARSDatabaseUtil.createAdLocationVisit(rs);
+		}
+		return adLV;
+	}
+	
+	public AdLocationVisit getLatest() throws SQLException {
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select * from " + ARSDatabaseUtil.AD_LOCATION_VISIT + " order by created_at desc limit 1";
+		stmt = conn.prepareStatement(query);
+		ResultSet rs = stmt.executeQuery();
+		
+		AdLocationVisit adLV = null;
+		if(rs.next()) {
+			adLV = ARSDatabaseUtil.createAdLocationVisit(rs);
+		}
+		return adLV;
 	}
 	
 	/*@PersistenceContext

@@ -29,7 +29,7 @@
 	<nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="/">ARS</a>
+      <a class="navbar-brand" href="/ars/">ARS</a>
     </div>
     <ul class="nav navbar-nav">
       <li><a href="#"><span class="glyphicon glyphicon-refresh"></span> Update</a></li>
@@ -39,11 +39,12 @@
       <li class="dropdown">
       	<a class="dropdown-toggle" data-toggle="dropdown" href="#">Test Data<span class="caret"></span></a>
      		<ul class="dropdown-menu">
-	          <li><a href="test-page">Add Page</a></li>
-	          <li><a href="test-keyword">Add Keyword</a></li>
-	          <li><a href="test-ad-location-visit">Add Page Location Visit</a></li> 
+	          <li><a href="/ars/test_page/0">Add Page</a></li>
+	          <li><a href="/ars/test_keyword">Add Keyword</a></li>
+	          <li><a href="/ars/test_ad_location_visit/0">Add Page Location Visit</a></li> 
 	        </ul>
       	</li>
+      	<li><a href="/ars/view_latest_adLocation">View Latest Ad Location Visit</a></li>
     </ul>
   </div>
 </nav>

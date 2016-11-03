@@ -1,6 +1,8 @@
 package com.CSC450.ars.domain;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +21,7 @@ public class AdLocationVisit implements Serializable{
 	private double totalSpent;
 	private long pageId;
 	private String pageLocation;
-	private long keywordId;
+	private Timestamp createdAt;
 	
 	public long getId() {
 		return id;
@@ -57,10 +59,10 @@ public class AdLocationVisit implements Serializable{
 	public void setPageLocation(String pageLocation) {
 		this.pageLocation = pageLocation;
 	}
-	public long getKeywordId() {
-		return keywordId;
+	public Timestamp getCreatedAt() {
+		return createdAt;
 	}
-	public void setKeywordId(long keywordId) {
-		this.keywordId = keywordId;
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
 	}
 }

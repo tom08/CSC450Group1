@@ -46,6 +46,20 @@ public class PageDao {
 		stmt.setString(2, page.getUrl());
 		stmt.execute();
 	}
+	
+	public Page getById(long id) throws SQLException {
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select * from " + ARSDatabaseUtil.PAGE + " where id = ?";
+		stmt = conn.prepareStatement(query);
+		stmt.setLong(1, id);
+		ResultSet rs = stmt.executeQuery();
+		
+		Page page = null;
+		if(rs.next()) {
+			page = ARSDatabaseUtil.createPage(rs);
+		}
+		return page;
+	}
 	/*private EntityManagerFactory emFactory;
 	
 	@PersistenceContext

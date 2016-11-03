@@ -48,6 +48,20 @@ public class KeywordDao {
 		stmt.execute();
 	}
 	
+	public Keyword getById(long id) throws SQLException {
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select * from " + ARSDatabaseUtil.KEYWORD + " where id = ?";
+		stmt = conn.prepareStatement(query);
+		stmt.setLong(1, id);
+		ResultSet rs = stmt.executeQuery();
+		
+		Keyword keyword = null;
+		if(rs.next()) {
+			keyword = ARSDatabaseUtil.createKeyword(rs);
+		}
+		return keyword;
+	}
+	
 /*private EntityManagerFactory emFactory;
 	
 	@PersistenceContext
