@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
+import java.sql.SQLException;
 
 import com.CSC450.ars.domain.Page;
 import com.CSC450.dao.impl.PageDao;
@@ -27,21 +28,21 @@ public class UpdateClient {
         address = "127.0.0.1";
     }
 
-    private void saveKeyword(String[] data){
+    private void saveKeyword(String[] data) throws SQLException{
         if(keywordDao.getById(Long.parseLong(data[0])) == null){
             Keyword kwd = new Keyword(Long.parseLong(data[0]), data[1]);
             keywordDao.save(kwd);
         }
     }
 
-    private void savePage(String[] data){
+    private void savePage(String[] data) throws SQLException{
         if(pageDao.getById(Long.parseLong(data[0])) == null){
             Page page = new Page(Long.parseLong(data[0]), data[1]);
             pageDao.save(page);
         }
     }
 
-    private void saveAdLocationVisit(String[] data){
+    private void saveAdLocationVisit(String[] data) throws SQLException{
         if(adLocationVisitDao.getById(Long.parseLong(data[0])) == null){
             AdLocationVisit visit = new AdLocationVisit(
                     Long.parseLong(data[0]),
@@ -55,7 +56,7 @@ public class UpdateClient {
         }
     }
 
-    private void saveRelationship(String[] data){
+    private void saveRelationship(String[] data) throws SQLException{
         long page_id = Long.parseLong(data[1]);
         long keyword_id = Long.parseLong(data[0]);
         Page page = pageDao.getById(page_id);
@@ -96,17 +97,26 @@ public class UpdateClient {
                 continue;
             }
             if(type.equals("PAGE")){
-                savePage(data);
+                try{
+                    savePage(data);
+                } catch(SQLException ex){}
             }
             else if(type.equals("AD")){
-                saveAdLocationVisit(data);
+                try{
+                    saveAdLocationVisit(data);
+                } catch(SQLException ex){}
             }
             else if(type.equals("KEY")){
-                saveKeyword(data);
+                try{
+                    saveKeyword(data);
+                } catch(SQLException ex){}
             }
             else if(type.equals("KPR")){
-                saveRelationship(data);
+                try{
+                    saveRelationship(data);
+                } catch(SQLException ex){}
             }
         }
+        socket.close();
     }
 }

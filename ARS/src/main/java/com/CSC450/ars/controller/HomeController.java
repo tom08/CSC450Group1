@@ -1,5 +1,7 @@
 package com.CSC450.ars.controller;
 
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.Date;
 import java.time.LocalDateTime;
@@ -8,6 +10,7 @@ import java.time.ZoneId;
 import java.util.Locale;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,15 +19,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.CSC450.support.UpdateClient;
 
-import com.CSC450.ars.domain.Page;
 import com.CSC450.ars.domain.AdLocationVisit;
-import com.CSC450.dao.impl.PageDao;
+import com.CSC450.ars.domain.Keyword;
+import com.CSC450.ars.domain.Page;
 import com.CSC450.dao.impl.AdLocationVisitDao;
+import com.CSC450.dao.impl.KeywordDao;
+import com.CSC450.dao.impl.PageDao;
 
 /**
  * Handles requests for the application home page.
@@ -33,47 +39,47 @@ import com.CSC450.dao.impl.AdLocationVisitDao;
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-	
-	
 	private PageDao pageDao = new PageDao();
-	private AdLocationVisitDao adLocationDao = new AdLocationVisitDao();
-	
+	private AdLocationVisitDao adLVDao = new AdLocationVisitDao();
+	private KeywordDao keywordDao = new KeywordDao();
 	/**
 	 * Simply selects the home view to render by returning its name.
+	 * @throws SQLException 
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
-		logger.info("Welcome home! The client locale is {}.", locale);
-		model.addAttribute("page", new Page());
+	public String home(Model model) throws SQLException {
 		model.addAttribute("pages", pageDao.getAll());
-		AdLocationVisit last_ad = adLocationDao.getLatest();
-		if(last_ad == null)
+		AdLocationVisit last_ad = adLVDao.getLatest();
+		if(last_ad == null){
             model.addAttribute("needs_update", true);
+		}
         else{
-            java.util.Date last_updated_date = last_ad.getCreatedAt();
-            LocalDateTime last_updated = LocalDateTime.ofInstant(last_updated_date.toInstant(), ZoneId.systemDefault());
-            Duration time_since_update = Duration.between(last_updated, LocalDateTime.now());
-            if(time_since_update.toMinutes() > 120){
+            LocalDateTime last_updated = last_ad.getCreatedAt().toLocalDateTime();
+            LocalDateTime current_date = LocalDateTime.now();
+            long minutes = ChronoUnit.MINUTES.between(last_updated, current_date);
+            if(minutes > 120){
                 model.addAttribute("needs_update", true);
             }
             else{
                 model.addAttribute("needs_update", false);
             }
         }
-		
-		
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		
-		String formattedDate = dateFormat.format(date);
-		
-		model.addAttribute("serverTime", formattedDate );
-		
 		return "home";
 	}
 	
-	@RequestMapping(value = "/save_page", method = RequestMethod.POST)
-	public String saveAdSpace(Model model, @ModelAttribute("page") Page page, BindingResult bindingResult) {
+	@RequestMapping(value="test_page/{pageId}", method=RequestMethod.GET)
+	public String testPage(Model model, @PathVariable long pageId) throws SQLException {
+		Page page = new Page();
+		if(pageId > 0) {
+			page = pageDao.getById(pageId);
+		}
+		model.addAttribute("page", page);
+		return "page";
+	}
+	
+	@RequestMapping(value="save_page", method=RequestMethod.POST)
+	public String savePage(Model model, @ModelAttribute("page") Page page, BindingResult result) throws SQLException {
+		//page.setKeywords(keywordDao.getAll());
 		pageDao.save(page);
 		return "redirect:/";
 	}
@@ -94,5 +100,46 @@ public class HomeController {
         }
         return "redirect:/";
     }
+	/*
+	@RequestMapping(value="delete_page/{pageId}", method=RequestMethod.POST)
+	public String deletePage(Model model, @PathVariable long pageId) {
+		pageDao.deleteById(pageId);
+		return "redirect:/";
+	}*/
+	
+	@RequestMapping(value="/test_ad_location_visit/{adLVId}", method=RequestMethod.GET)
+	public String testAdLocationVisit(Model model, @PathVariable long adLVId) throws SQLException {
+		AdLocationVisit adLV = new AdLocationVisit();
+		if(adLVId > 0) {
+			adLV = adLVDao.getById(adLVId);
+		}
+		model.addAttribute("adLocationVisit", adLV);
+		return "ad_location_visit";
+	}
+	
+	@RequestMapping(value="/view_latest_adLocation", method=RequestMethod.GET)
+	public String viewLatest(Model model) throws SQLException {
+		model.addAttribute("adLV", adLVDao.getLatest());
+		return "view_latest";
+	}
+	
+	@RequestMapping(value="save_ad_location_visit", method=RequestMethod.POST)
+	public String savePage(Model model, @ModelAttribute("adLocationVisit") AdLocationVisit adLocationVisit, BindingResult result) throws SQLException {
+		adLVDao.save(adLocationVisit);
+		return "redirect:/";
+	}/*
+	
+	@RequestMapping(value="/test-keyword", method=RequestMethod.GET)
+	public String testKeyword(Model model) {
+		model.addAttribute("keyword", new Keyword());
+		return "keyword";
+	}
+	
+	@RequestMapping(value="save_keyword", method=RequestMethod.POST)
+	public String saveKeyword(Model model, @ModelAttribute("keyword") Keyword keyword, BindingResult result) {
+		keywordDao.save(keyword);
+		return "redirect:/";
+	}*/
+	
 	
 }
