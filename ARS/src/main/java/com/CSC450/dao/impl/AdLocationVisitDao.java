@@ -1,5 +1,12 @@
 package com.CSC450.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -16,36 +23,63 @@ import com.CSC450.ars.domain.AdLocationVisit;
 
 @Service
 public class AdLocationVisitDao {
-private EntityManagerFactory emFactory;
-	
-	@PersistenceContext
-	private EntityManager entityManager;
-	
-	public AdLocationVisitDao() {
-		emFactory = Persistence.createEntityManagerFactory("persistenceUnit");
-		entityManager = emFactory.createEntityManager();
-	}
-	
-	@Transactional
-	public List<AdLocationVisit> getAll(){
-		return entityManager.createQuery("FROM AdLocationVisit", AdLocationVisit.class).getResultList();
-	}
-	
-	@Transactional
-	public void save(AdLocationVisit alv){
-		entityManager.getTransaction().begin();
-		entityManager.merge(alv);
-		entityManager.getTransaction().commit();
-	}
 
-	@Transactional
-	public AdLocationVisit getById(long id){
-		TypedQuery<AdLocationVisit> query = entityManager.createQuery("SELECT p FROM AdLocationVisit p WHERE p.id = :id", AdLocationVisit.class);
-		try{
-            return query.setParameter("id", id).getSingleResult();
-        }
-        catch(NoResultException e){
-            return null;
-        }
+	private Connection conn;
+	private String query;
+	private PreparedStatement stmt;
+
+	public List<AdLocationVisit> getAll() throws SQLException {
+		List<AdLocationVisit> adLVs = new ArrayList<AdLocationVisit>();
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select * from " + ARSDatabaseUtil.AD_LOCATION_VISIT;
+		stmt = conn.prepareStatement(query);
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			adLVs.add(ARSDatabaseUtil.createAdLocationVisit(rs));
+		}
+		conn.close();
+		return adLVs;
 	}
+	
+	public void save(AdLocationVisit adLV) throws SQLException {
+		conn = ARSDatabaseUtil.getConnection();
+		query = "insert into " + ARSDatabaseUtil.AD_LOCATION_VISIT + " values(?,?,?,?,?,?,?)";
+		stmt = conn.prepareStatement(query);
+		stmt.setLong(1, adLV.getId());
+		stmt.setString(2, adLV.getPageLocation());
+		stmt.setDouble(3, adLV.getFocusRatio());
+		stmt.setDouble(4, adLV.getActiveRatio());
+		stmt.setDouble(5, adLV.getTotalSpent());
+		stmt.setLong(6, adLV.getPageId());
+		stmt.setTimestamp(7, new Timestamp(new Date().getTime()));
+		stmt.execute();
+	}
+	
+	public AdLocationVisit getById(long id) throws SQLException {
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select * from " + ARSDatabaseUtil.AD_LOCATION_VISIT + " where id = ?";
+		stmt = conn.prepareStatement(query);
+		stmt.setLong(1, id);
+		ResultSet rs = stmt.executeQuery();
+		
+		AdLocationVisit adLV = null;
+		if(rs.next()) {
+			adLV = ARSDatabaseUtil.createAdLocationVisit(rs);
+		}
+		return adLV;
+	}
+	
+	public AdLocationVisit getLatest() throws SQLException {
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select * from " + ARSDatabaseUtil.AD_LOCATION_VISIT + " order by created_at desc limit 1";
+		stmt = conn.prepareStatement(query);
+		ResultSet rs = stmt.executeQuery();
+		
+		AdLocationVisit adLV = null;
+		if(rs.next()) {
+			adLV = ARSDatabaseUtil.createAdLocationVisit(rs);
+		}
+		return adLV;
+	}
+	
 }

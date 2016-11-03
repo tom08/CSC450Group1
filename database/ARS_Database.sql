@@ -13,6 +13,7 @@ CREATE TABLE adData.ad_location_visit(
 	active_ratio double,
 	total_spent double,
 	page_id bigint,
+	created_at datetime DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY(page_id) REFERENCES page(id)
 );
 

@@ -1,5 +1,10 @@
 package com.CSC450.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -12,42 +17,50 @@ import javax.persistence.NoResultException;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.CSC450.ars.domain.AdLocationVisit;
+import com.CSC450.ars.domain.Keyword;
 import com.CSC450.ars.domain.Page;
 import com.CSC450.ars.domain.Keyword;
 
 public class PageDao {
-	private EntityManagerFactory emFactory;
 	
-	@PersistenceContext
-	private EntityManager entityManager;
+	private Connection conn;
+	private String query;
+	private PreparedStatement stmt;
 	
-	public PageDao() {
-		emFactory = Persistence.createEntityManagerFactory("persistenceUnit");
-		entityManager = emFactory.createEntityManager();
+	public List<Page> getAll() throws SQLException {
+		List<Page> pages = new ArrayList<Page>();
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select id, url from page";
+		stmt = conn.prepareStatement(query);
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			pages.add(ARSDatabaseUtil.createPage(rs));
+		}
+		conn.close();
+		return pages;
 	}
 	
-	@Transactional
-	public List<Page> getAll(){
-		return entityManager.createQuery("FROM Page", Page.class).getResultList();
+	public void save(Page page) throws SQLException {
+		conn = ARSDatabaseUtil.getConnection();
+		query = "insert into page values(?,?)";
+		stmt = conn.prepareStatement(query);
+		stmt.setLong(1, page.getId());
+		stmt.setString(2, page.getUrl());
+		stmt.execute();
 	}
 	
-	@Transactional
-	public void save(Page word){
-		entityManager.getTransaction().begin();
-		entityManager.merge(word);
-		entityManager.getTransaction().commit();
+	public Page getById(long id) throws SQLException {
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select * from " + ARSDatabaseUtil.PAGE + " where id = ?";
+		stmt = conn.prepareStatement(query);
+		stmt.setLong(1, id);
+		ResultSet rs = stmt.executeQuery();
+		
+		Page page = null;
+		if(rs.next()) {
+			page = ARSDatabaseUtil.createPage(rs);
+		}
+		return page;
 	}
-	
-	@Transactional
-	public Page getById(long id){
-		TypedQuery<Page> query = entityManager.createQuery("SELECT p FROM Page p WHERE p.id = :id", Page.class);
-		try{
-            return query.setParameter("id", id).getSingleResult();
-        }
-        catch (NoResultException e){
-            return null;
-        }
-	}
-
-
 }
