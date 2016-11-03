@@ -9,20 +9,17 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "ad_location_visit")
 public class AdLocationVisit implements Serializable{
 	
 	private static final long serialVersionUID = -6748657696577761491L;
 	
-	@Id
-	@GeneratedValue	
 	private long id;
 	private double focusRatio;
 	private double activeRatio;
 	private double totalSpent;
 	private long pageId;
 	private String pageLocation;
+	private long keywordId;
 	
 	public long getId() {
 		return id;
@@ -59,5 +56,11 @@ public class AdLocationVisit implements Serializable{
 	}
 	public void setPageLocation(String pageLocation) {
 		this.pageLocation = pageLocation;
+	}
+	public long getKeywordId() {
+		return keywordId;
+	}
+	public void setKeywordId(long keywordId) {
+		this.keywordId = keywordId;
 	}
 }

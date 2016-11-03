@@ -13,21 +13,13 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "page")
 public class Page implements Serializable{
 
 	private static final long serialVersionUID = 2012468640809192033L;
 	
-	@Id
-	@GeneratedValue
 	private long id;
 	private String url;
 	
-	@ManyToMany
-	@JoinTable(name="keyword_page",
-				joinColumns = @JoinColumn(name="page_id", referencedColumnName = "id"),
-				inverseJoinColumns = @JoinColumn(name="keyword_id", referencedColumnName = "id"))
 	private List<Keyword> keywords;
 	
 	public long getId() {

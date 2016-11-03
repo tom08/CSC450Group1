@@ -12,13 +12,10 @@
 		</thead>
 		
 		<tbody>
-			<c:forEach items="${pages}" var="page">
+			<c:forEach items="${adLVs}" var="adLV">
 				<tr>
-					<td>${page.url}</td>
-					<td><c:forEach items="${page.keywords}" var="keyword">
-						<span>${keyword.keywordName}</span>
-					</c:forEach></td>
-					<td><button onclick="deletePage(${page.id})" class="btn btn-default glyphicon glyphicon-remove-circle"></button></td>
+					<td>${adLV.id}</td>
+					<td><button onclick="deletePage(${adLV.id})" class="btn btn-default glyphicon glyphicon-remove-circle"></button></td>
 				</tr>
 			</c:forEach>
 		</tbody>

@@ -1,5 +1,6 @@
 package com.CSC450.ars.controller;
 
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -34,32 +35,32 @@ public class HomeController {
 	private KeywordDao keywordDao = new KeywordDao();
 	/**
 	 * Simply selects the home view to render by returning its name.
+	 * @throws SQLException 
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Model model) {
-		model.addAttribute("pages", pageDao.getAll());
+	public String home(Model model) throws SQLException {
+		model.addAttribute("adLVs", adLVDao.getAll());
 		return "home";
 	}
 	
 	@RequestMapping(value="/test-page", method=RequestMethod.GET)
 	public String testPage(Model model) {
 		model.addAttribute("page", new Page());
-		model.addAttribute("availableKeywords", keywordDao.getAll());
 		return "page";
 	}
 	
 	@RequestMapping(value="save_page", method=RequestMethod.POST)
-	public String savePage(Model model, @ModelAttribute("page") Page page, BindingResult result) {
-		page.setKeywords(keywordDao.getAll());
+	public String savePage(Model model, @ModelAttribute("page") Page page, BindingResult result) throws SQLException {
+		//page.setKeywords(keywordDao.getAll());
 		pageDao.save(page);
 		return "redirect:/";
 	}
-	
+	/*
 	@RequestMapping(value="delete_page/{pageId}", method=RequestMethod.POST)
 	public String deletePage(Model model, @PathVariable long pageId) {
 		pageDao.deleteById(pageId);
 		return "redirect:/";
-	}
+	}*/
 	
 	@RequestMapping(value="/test-ad-location-visit", method=RequestMethod.GET)
 	public String testAdLocationVisit(Model model) {
@@ -68,10 +69,10 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value="save_ad_location_visit", method=RequestMethod.POST)
-	public String savePage(Model model, @ModelAttribute("adLocationVisit") AdLocationVisit adLocationVisit, BindingResult result) {
+	public String savePage(Model model, @ModelAttribute("adLocationVisit") AdLocationVisit adLocationVisit, BindingResult result) throws SQLException {
 		adLVDao.save(adLocationVisit);
 		return "redirect:/";
-	}
+	}/*
 	
 	@RequestMapping(value="/test-keyword", method=RequestMethod.GET)
 	public String testKeyword(Model model) {
@@ -83,7 +84,7 @@ public class HomeController {
 	public String saveKeyword(Model model, @ModelAttribute("keyword") Keyword keyword, BindingResult result) {
 		keywordDao.save(keyword);
 		return "redirect:/";
-	}
+	}*/
 	
 	
 }
