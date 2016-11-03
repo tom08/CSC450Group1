@@ -11,7 +11,7 @@ import com.CSC450.ars.domain.Page;
 
 public class ARSDatabaseUtil {
 	
-	private static String URL = "jdbc:mysql://127.0.0.1:3306/addata";
+	private static String URL = "jdbc:mysql://127.0.0.1:3306/adData";
 	private static String USERNAME = "ars";
 	private static String PASSWORD = "password";
 	

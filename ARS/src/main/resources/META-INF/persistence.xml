@@ -7,9 +7,9 @@
         <property name="hibernate.hbm2ddl.auto" value="validate"/>
         <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
         <property name="hibernate.connection.charSet" value="UTF-8"/>
-        <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/addata"/>
-         <property name="javax.persistence.jdbc.user" value="Natenador"/>
-         <property name="javax.persistence.jdbc.password" value="Nak#1483"/>
+        <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/adData"/>
+         <property name="javax.persistence.jdbc.user" value="ars"/>
+         <property name="javax.persistence.jdbc.password" value="password"/>
          <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
     </properties>
   </persistence-unit>

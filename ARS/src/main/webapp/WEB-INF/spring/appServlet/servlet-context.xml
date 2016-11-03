@@ -27,9 +27,9 @@
 	<!-- MySQL Datasource with Commons DBCP connection pooling -->
   <beans:bean class="org.apache.commons.dbcp.BasicDataSource" id="dataSource">
     <beans:property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-    <beans:property name="url" value="jdbc:mysql://127.0.0.1:3306/addata"/>
-    <beans:property name="username" value="Natenador"/>
-    <beans:property name="password" value="Nak#1483"/>
+    <beans:property name="url" value="jdbc:mysql://127.0.0.1:3306/adData"/>
+    <beans:property name="username" value="ars"/>
+    <beans:property name="password" value="password"/>
   </beans:bean>
    
   <!-- EntityManagerFactory -->
