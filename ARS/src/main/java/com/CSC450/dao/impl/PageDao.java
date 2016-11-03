@@ -28,7 +28,7 @@ public class PageDao {
 	public List<Page> getAll() throws SQLException {
 		List<Page> pages = new ArrayList<Page>();
 		conn = ARSDatabaseUtil.getConnection();
-		query = "select id, url from ad_location_visit";
+		query = "select id, url from page";
 		stmt = conn.prepareStatement(query);
 		ResultSet rs = stmt.executeQuery();
 		while(rs.next()) {

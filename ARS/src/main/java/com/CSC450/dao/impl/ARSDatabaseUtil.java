@@ -6,13 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.CSC450.ars.domain.AdLocationVisit;
+import com.CSC450.ars.domain.Keyword;
 import com.CSC450.ars.domain.Page;
 
 public class ARSDatabaseUtil {
 	
 	private static String URL = "jdbc:mysql://127.0.0.1:3306/addata";
-	private static String USERNAME = "Natenador";
-	private static String PASSWORD = "Nak#1483";
+	private static String USERNAME = "ars";
+	private static String PASSWORD = "password";
 	
 	public static Connection getConnection() throws SQLException {
 		return DriverManager.getConnection(URL, USERNAME, PASSWORD);
@@ -35,6 +36,13 @@ public class ARSDatabaseUtil {
 		page.setId(rs.getLong("id"));
 		page.setUrl(rs.getString("url"));
 		return page;
+	}
+	
+	public static Keyword createKeyword(ResultSet rs) throws SQLException {
+		Keyword keyword = new Keyword();
+		keyword.setId(rs.getLong("id"));
+		keyword.setKeywordName(rs.getString("keyword_name"));
+		return keyword;
 	}
 
 }
