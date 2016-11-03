@@ -45,6 +45,8 @@ public class PageDao {
 		stmt.setLong(1, page.getId());
 		stmt.setString(2, page.getUrl());
 		stmt.execute();
+		conn.close();
+		ARSDatabaseUtil.updatePage_KeywordTablePageId(page.getId(), page.getKeywordIds());
 	}
 	
 	public Page getById(long id) throws SQLException {
@@ -58,7 +60,21 @@ public class PageDao {
 		if(rs.next()) {
 			page = ARSDatabaseUtil.createPage(rs);
 		}
+		conn.close();
 		return page;
+	}
+	
+	public List<Page> getPagesByKeywordId(long keywordId) throws SQLException {
+		List<Page> pages = new ArrayList<Page>();
+		conn = ARSDatabaseUtil.getConnection();
+		query = "SELECT p.id, p.url FROM addata.page_keywords pk join addata.page p on p.id = pk.page where pk.keywords = ?";
+		stmt = conn.prepareStatement(query);
+		stmt.setLong(1, keywordId);
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			pages.add(ARSDatabaseUtil.createPage(rs));
+		}
+		return pages;
 	}
 	/*private EntityManagerFactory emFactory;
 	

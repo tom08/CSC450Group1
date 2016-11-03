@@ -14,6 +14,8 @@ public class Keyword {
 	private long id;
 	private String keywordName;
 	
+	private long[] pageIds;
+	
 	private List<Page> pages;
 	
 	public long getId() {
@@ -27,6 +29,12 @@ public class Keyword {
 	}
 	public void setKeywordName(String name) {
 		this.keywordName = name;
+	}
+	public long[] getPageIds() {
+		return pageIds;
+	}
+	public void setPageIds(long[] pageIds) {
+		this.pageIds = pageIds;
 	}
 	public List<Page> getPages() {
 		return pages;

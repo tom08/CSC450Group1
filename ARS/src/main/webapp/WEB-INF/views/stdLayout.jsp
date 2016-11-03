@@ -33,18 +33,10 @@
     </div>
     <ul class="nav navbar-nav">
       <li><a href="#"><span class="glyphicon glyphicon-refresh"></span> Update</a></li>
+      <li><a href="/">Dash Board</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
     	<li><a href="#"><span class="glyphicon glyphicon-cog"></span></a></li>
-      <li class="dropdown">
-      	<a class="dropdown-toggle" data-toggle="dropdown" href="#">Test Data<span class="caret"></span></a>
-     		<ul class="dropdown-menu">
-	          <li><a href="/ars/test_page/0">Add Page</a></li>
-	          <li><a href="/ars/test_keyword">Add Keyword</a></li>
-	          <li><a href="/ars/test_ad_location_visit/0">Add Page Location Visit</a></li> 
-	        </ul>
-      	</li>
-      	<li><a href="/ars/view_latest_adLocation">View Latest Ad Location Visit</a></li>
     </ul>
   </div>
 </nav>

@@ -51,6 +51,7 @@ public class AdLocationVisitDao {
 		stmt.setLong(6, adLV.getPageId());
 		stmt.setTimestamp(7, new Timestamp(new Date().getTime()));
 		stmt.execute();
+		conn.close();
 	}
 	
 	public AdLocationVisit getById(long id) throws SQLException {
@@ -64,6 +65,7 @@ public class AdLocationVisitDao {
 		if(rs.next()) {
 			adLV = ARSDatabaseUtil.createAdLocationVisit(rs);
 		}
+		conn.close();
 		return adLV;
 	}
 	
@@ -77,6 +79,7 @@ public class AdLocationVisitDao {
 		if(rs.next()) {
 			adLV = ARSDatabaseUtil.createAdLocationVisit(rs);
 		}
+		conn.close();
 		return adLV;
 	}
 	
