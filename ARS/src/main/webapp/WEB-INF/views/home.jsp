@@ -1,32 +1,39 @@
 <%@include file="stdLayout.jsp" %>
 <%@ page session="false" %>
-<html>
-<head>
-	<title>Home</title>
-</head>
-<body>
-<h1>
-	ARS Test Page (home.jsp)
-</h1>
 
-<c:forEach items="${adSpaces}" var="ad">
-	<p>Id: ${ad.id}</p>
-</c:forEach>
+<div class="container">
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>Page URL</th>
+				<th>Keywords</th>
+				<th>Delete</th>
+			</tr>
+		</thead>
+		
+		<tbody>
+			<c:forEach items="${pages}" var="page">
+				<tr>
+					<td>${page.url}</td>
+					<td><button onclick="updatePage(${page.id})" class="btn btn-default glyphicon glyphicon-remove-circle"></button></td>
+					<td><a href="test_page/${page.id}" class="btn btn-default glyphicon glyphicon-remove-circle"></a></td>
+				</tr>
+			</c:forEach>
+		</tbody>
+	
+	</table>
 
-<form:form method="POST" action="save_ad_space" modelAttribute="adSpace">
-	<form:label path="containingPage">Containing Page:</form:label>
-    <form:input path="containingPage"/>
-    
-    <form:label path="timeSpent">Time Spent:</form:label>
-    <form:input path="timeSpent"/>
-    
-    <form:label path="focusRatio">Focus Ratio:</form:label>
-    <form:input path="focusRatio"/>
-    
-    <form:label path="activeRatio">Active Ratio:</form:label>
-    <form:input path="activeRatio"/>
-    
-    <input type="submit" value="Submit"/>
-</form:form>
+</div>
+<form method="post" action="" id="deletePage">
+</form>
+
+<script>
+	function deletePage(id) {
+		var deletePageForm = document.getElementById("deletePage");
+		deletePageForm.action = "delete_page/" + id;
+		deletePageForm.submit();
+	}
+</script>
+
 </body>
 </html>
