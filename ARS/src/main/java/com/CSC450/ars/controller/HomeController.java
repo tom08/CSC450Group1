@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.CSC450.ars.domain.AdLocationVisit;
 import com.CSC450.ars.domain.Keyword;
 import com.CSC450.ars.domain.Page;
+import com.CSC450.dao.impl.ARSDatabaseUtil;
 import com.CSC450.dao.impl.AdLocationVisitDao;
 import com.CSC450.dao.impl.KeywordDao;
 import com.CSC450.dao.impl.PageDao;
@@ -36,6 +37,12 @@ public class HomeController {
 	 */
 	@RequestMapping(value = DASHBOARD, method = RequestMethod.GET)
 	public String home(Model model) throws SQLException {
+		model.addAttribute("lastUpdatedDate", adLVDao.getLatest().getCreatedAt());
+		model.addAttribute("numPages", pageDao.count());
+		model.addAttribute("numAds", adLVDao.countDistinct());
+		model.addAttribute("numAdsTracked", adLVDao.count());
+		model.addAttribute("keyword", new Keyword());
+		model.addAttribute("page", new Page());
 		return "dashboard";
 	}
 	
@@ -51,6 +58,7 @@ public class HomeController {
 	
 	@RequestMapping(value="save_page", method=RequestMethod.POST)
 	public String savePage(Model model, @ModelAttribute("page") Page page, BindingResult result) throws SQLException {
+		page.setKeywords(keywordDao.getAll());
 		pageDao.save(page);
 		return "redirect:/";
 	}
@@ -62,8 +70,9 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value="save_keyword", method=RequestMethod.POST)
-	public String saveKeyword(Model model, @ModelAttribute("keyword") Keyword keyword, BindingResult result) {
-		//keywordDao.save(keyword);
+	public String saveKeyword(Model model, @ModelAttribute("keyword") Keyword keyword, BindingResult result) throws SQLException {
+		keyword.setPages(pageDao.getAll());
+		keywordDao.save(keyword);
 		return "redirect:/";
 	}
 	

@@ -52,26 +52,26 @@ public class ARSDatabaseUtil {
 		return keyword;
 	}
 	
-	public static void updatePage_KeywordTablePageId(long pageId, long[] keywordIds) throws SQLException {
+	public static void updatePage_KeywordTablePageId(long pageId, List<Keyword> keywords) throws SQLException {
 		Connection conn = getConnection();
 		String query = "insert into " + PAGE_KEYWORDS + " values (?, ?)";
 		PreparedStatement stmt;
-		for(int i = 0; i < keywordIds.length; i++) {
+		for(Keyword keyword : keywords) {
 			stmt = conn.prepareStatement(query);
-			stmt.setLong(1, keywordIds[i]);
+			stmt.setLong(1, keyword.getId());
 			stmt.setLong(2, pageId);
 			stmt.execute();
 		}
 	}
 	
-	public static void updatePage_KeywordTableKeywordId(long keywordId, long[] pageIds) throws SQLException {
+	public static void updatePage_KeywordTableKeywordId(long keywordId, List<Page> pages) throws SQLException {
 		Connection conn = getConnection();
 		String query = "insert into " + PAGE_KEYWORDS + " values (?, ?)";
 		PreparedStatement stmt;
-		for(int i = 0; i < pageIds.length; i++) {
+		for(Page page : pages) {
 			stmt = conn.prepareStatement(query);
 			stmt.setLong(1, keywordId);
-			stmt.setLong(2, pageIds[i]);
+			stmt.setLong(2, page.getId());
 			stmt.execute();
 		}
 		conn.close();

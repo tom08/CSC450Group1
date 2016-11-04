@@ -21,6 +21,20 @@
 		<!-- Project CSS -->
 		<!-- <link rel="stylesheet" href="WEB-INF/resources/css/master.css" type="text/css"> -->
 		
+		<style>
+			fieldset.surround {
+				margin-top: 10px;
+				border: 2px solid grey;
+			}
+			legend {
+				border: none;
+				border-radius: 2px;
+				width: 5.5%;
+				background-color: #008add;
+				color: white;
+			}
+		</style>
+		
 		<title>Home</title>
 	</head>
 
@@ -33,7 +47,8 @@
     </div>
     <ul class="nav navbar-nav">
       <li><a href="#"><span class="glyphicon glyphicon-refresh"></span> Update</a></li>
-      <li><a href="/">Dash Board</a></li>
+      <li><a href="/ars/">Dash Board</a></li>
+      <li><a href="/ars/rate_existing">Rate Existing</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
     	<li><a href="#"><span class="glyphicon glyphicon-cog"></span></a></li>

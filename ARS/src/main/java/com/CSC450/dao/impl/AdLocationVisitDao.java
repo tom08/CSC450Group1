@@ -69,6 +69,43 @@ public class AdLocationVisitDao {
 		return adLV;
 	}
 	
+	public List<AdLocationVisit> getByPageId(long pageId) throws SQLException {
+		List<AdLocationVisit> adLVs = new ArrayList<AdLocationVisit>();
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select * from " + ARSDatabaseUtil.AD_LOCATION_VISIT + " where page_id = ?";
+		stmt = conn.prepareStatement(query);
+		stmt.setLong(1, pageId);
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			adLVs.add(ARSDatabaseUtil.createAdLocationVisit(rs));
+		}
+		return adLVs;
+	}
+	
+	public long count() throws SQLException {
+		long count = 0;
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select COUNT(id) count from " + ARSDatabaseUtil.AD_LOCATION_VISIT;
+		stmt = conn.prepareStatement(query);
+		ResultSet rs = stmt.executeQuery();
+		if(rs.next()) {
+			count = rs.getLong("count");
+		}
+		return count;
+	}
+	
+	public long countDistinct() throws SQLException {
+		long count = 0;
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select COUNT(DISTINCT page_location) count from " + ARSDatabaseUtil.AD_LOCATION_VISIT;
+		stmt = conn.prepareStatement(query);
+		ResultSet rs = stmt.executeQuery();
+		if(rs.next()) {
+			count = rs.getLong("count");
+		}
+		return count;
+	}
+	
 	public AdLocationVisit getLatest() throws SQLException {
 		conn = ARSDatabaseUtil.getConnection();
 		query = "select * from " + ARSDatabaseUtil.AD_LOCATION_VISIT + " order by created_at desc limit 1";

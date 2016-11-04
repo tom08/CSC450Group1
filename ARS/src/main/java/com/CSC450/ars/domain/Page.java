@@ -19,9 +19,6 @@ public class Page implements Serializable{
 	
 	private long id;
 	private String url;
-	
-	private long[] keywordIds;
-	
 	private List<Keyword> keywords;
 	
 	public long getId() {
@@ -41,12 +38,6 @@ public class Page implements Serializable{
 	}
 	public void setKeywords(List<Keyword> keywords) {
 		this.keywords = keywords;
-	}
-	public long[] getKeywordIds() {
-		return keywordIds;
-	}
-	public void setKeywordIds(long[] keywordIds) {
-		this.keywordIds = keywordIds;
 	}
 	
 	

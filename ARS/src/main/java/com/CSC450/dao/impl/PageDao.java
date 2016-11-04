@@ -46,7 +46,32 @@ public class PageDao {
 		stmt.setString(2, page.getUrl());
 		stmt.execute();
 		conn.close();
-		ARSDatabaseUtil.updatePage_KeywordTablePageId(page.getId(), page.getKeywordIds());
+
+		ARSDatabaseUtil.updatePage_KeywordTablePageId(getLatestId(), page.getKeywords());
+	}
+	
+	public long count() throws SQLException {
+		long count = 0;
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select COUNT(id) count from " + ARSDatabaseUtil.PAGE;
+		stmt = conn.prepareStatement(query);
+		ResultSet rs = stmt.executeQuery();
+		if(rs.next()) {
+			count = rs.getLong("count");
+		}
+		return count;
+	}
+	
+	public long getLatestId() throws SQLException {
+		long latest = 0;
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select MAX(id) max from " + ARSDatabaseUtil.PAGE;
+		stmt = conn.prepareStatement(query);
+		ResultSet rs = stmt.executeQuery();
+		if(rs.next()) {
+			latest = rs.getLong("max");
+		}
+		return latest;
 	}
 	
 	public Page getById(long id) throws SQLException {

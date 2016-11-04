@@ -39,6 +39,18 @@ public class KeywordDao {
 		return keywords;
 	}
 	
+	public long getLatestId() throws SQLException {
+		long latest = 0;
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select MAX(id) max from " + ARSDatabaseUtil.KEYWORD;
+		stmt = conn.prepareStatement(query);
+		ResultSet rs = stmt.executeQuery();
+		if(rs.next()) {
+			latest = rs.getLong("max");
+		}
+		return latest;
+	}
+	
 	public void save(Keyword keyword) throws SQLException {
 		conn = ARSDatabaseUtil.getConnection();
 		query = "insert into keyword values(?,?)";
@@ -47,7 +59,7 @@ public class KeywordDao {
 		stmt.setString(2, keyword.getKeywordName());
 		stmt.execute();
 		conn.close();
-		ARSDatabaseUtil.updatePage_KeywordTableKeywordId(keyword.getId(), keyword.getPageIds());
+		ARSDatabaseUtil.updatePage_KeywordTableKeywordId(getLatestId(), keyword.getPages());
 	}
 	
 	public Keyword getById(long id) throws SQLException {
