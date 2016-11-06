@@ -79,6 +79,8 @@ public class AdLocationVisitDao {
 		while(rs.next()) {
 			adLVs.add(ARSDatabaseUtil.createAdLocationVisit(rs));
 		}
+
+		conn.close();
 		return adLVs;
 	}
 	
@@ -91,6 +93,7 @@ public class AdLocationVisitDao {
 		if(rs.next()) {
 			count = rs.getLong("count");
 		}
+		conn.close();
 		return count;
 	}
 	
@@ -103,6 +106,7 @@ public class AdLocationVisitDao {
 		if(rs.next()) {
 			count = rs.getLong("count");
 		}
+		conn.close();
 		return count;
 	}
 	
@@ -119,24 +123,4 @@ public class AdLocationVisitDao {
 		conn.close();
 		return adLV;
 	}
-	
-	/*@PersistenceContext
-	private EntityManager entityManager;
-	
-	public AdLocationVisitDao() {
-		emFactory = Persistence.createEntityManagerFactory("persistenceUnit");
-		entityManager = emFactory.createEntityManager();
-	}
-	
-	@Transactional
-	public List<AdLocationVisit> getAll(){
-		return entityManager.createQuery("FROM AdLocationVisit", AdLocationVisit.class).getResultList();
-	}
-	
-	@Transactional
-	public void save(AdLocationVisit alv){
-		entityManager.getTransaction().begin();
-		entityManager.merge(alv);
-		entityManager.getTransaction().commit();
-	}*/
 }

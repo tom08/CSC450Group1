@@ -59,6 +59,7 @@ public class PageDao {
 		if(rs.next()) {
 			count = rs.getLong("count");
 		}
+		conn.close();
 		return count;
 	}
 	
@@ -71,6 +72,7 @@ public class PageDao {
 		if(rs.next()) {
 			latest = rs.getLong("max");
 		}
+		conn.close();
 		return latest;
 	}
 	
@@ -99,42 +101,8 @@ public class PageDao {
 		while(rs.next()) {
 			pages.add(ARSDatabaseUtil.createPage(rs));
 		}
+		conn.close();
 		return pages;
 	}
-	/*private EntityManagerFactory emFactory;
-	
-	@PersistenceContext
-	private EntityManager entityManager;
-	
-	public PageDao() {
-		emFactory = Persistence.createEntityManagerFactory("persistenceUnit");
-		entityManager = emFactory.createEntityManager();
-	}
-	
-	@Transactional
-	public List<Page> getAll(){
-		return entityManager.createQuery("FROM Page", Page.class).getResultList();
-	}
-	
-	@Transactional
-	public void save(Page page){
-		entityManager.getTransaction().begin();
-		entityManager.merge(page);
-		entityManager.getTransaction().commit();
-	}
-	
-	@Transactional
-	public void deleteById(long pageId) {
-		entityManager.getTransaction().begin();
-		entityManager.createQuery("DELETE FROM Page p WHERE p.id = :id").setParameter("id", pageId).executeUpdate();
-		entityManager.getTransaction().commit();
-	}
-
-	
-	@Transactional
-	public Page getById(long id){
-		TypedQuery<Page> query = entityManager.createQuery("SELECT p FROM Page p WHERE p.id = :id", Page.class);
-		return query.setParameter("id", id).getSingleResult();
-	}*/
 	
 }

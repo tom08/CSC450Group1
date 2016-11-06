@@ -48,6 +48,7 @@ public class KeywordDao {
 		if(rs.next()) {
 			latest = rs.getLong("max");
 		}
+		conn.close();
 		return latest;
 	}
 	
@@ -87,28 +88,7 @@ public class KeywordDao {
 		while(rs.next()) {
 			keywords.add(ARSDatabaseUtil.createKeyword(rs));
 		}
+		conn.close();
 		return keywords;
 	}
-	
-/*private EntityManagerFactory emFactory;
-	
-	@PersistenceContext
-	private EntityManager entityManager;
-	
-	public KeywordDao() {
-		emFactory = Persistence.createEntityManagerFactory("persistenceUnit");
-		entityManager = emFactory.createEntityManager();
-	}
-	
-	@Transactional
-	public List<Keyword> getAll(){
-		return entityManager.createQuery("FROM Keyword", Keyword.class).getResultList();
-	}
-	
-	@Transactional
-	public void save(Keyword word){
-		entityManager.getTransaction().begin();
-		entityManager.merge(word);
-		entityManager.getTransaction().commit();
-	}*/
 }

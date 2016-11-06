@@ -62,6 +62,7 @@ public class ARSDatabaseUtil {
 			stmt.setLong(2, pageId);
 			stmt.execute();
 		}
+		conn.close();
 	}
 	
 	public static void updatePage_KeywordTableKeywordId(long keywordId, List<Page> pages) throws SQLException {
