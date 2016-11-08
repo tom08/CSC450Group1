@@ -23,9 +23,7 @@ public class Page implements Serializable{
 	
 	private long id;
 	private String url;
-
-    @ManyToMany
-    private List<Keyword> keywords;
+	private List<Keyword> keywords;
 
 	public Page(){}
 

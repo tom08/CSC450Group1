@@ -14,6 +14,7 @@ import com.CSC450.ars.domain.AdLocationVisit;
 import com.CSC450.dao.impl.AdLocationVisitDao;
 import com.CSC450.ars.domain.Keyword;
 import com.CSC450.dao.impl.KeywordDao;
+import com.CSC450.dao.impl.ARSDatabaseUtil;
 
 
 public class UpdateClient {
@@ -23,6 +24,7 @@ public class UpdateClient {
 	private PageDao pageDao = new PageDao();
 	private AdLocationVisitDao adLocationVisitDao = new AdLocationVisitDao();
 	private KeywordDao keywordDao = new KeywordDao();
+	private ARSDatabaseUtil dbUtil = new ARSDatabaseUtil();
 
     public UpdateClient(){
         address = "127.0.0.1";
@@ -70,8 +72,7 @@ public class UpdateClient {
             }
         }
         if(!exists && keyword != null && page != null){
-            page.addKeyword(keyword);
-            pageDao.save(page);
+            dbUtil.insertPage_KeywordRow(page.getId(), keyword.getId());
         }
     }
 
