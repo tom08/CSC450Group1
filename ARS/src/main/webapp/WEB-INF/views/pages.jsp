@@ -4,29 +4,39 @@
 
 
 <div class="container">
-	<h1>Pages</h1>
-	<table class = "table table-condensed">
+	<fieldset class="surround">
+	    <legend>Pages</legend>
+	   	<table id="statsDisplayTable" class="table table-bordered ars-table">
 		<thead>
 			<tr>
-				<th>ID</th>
-				<th>Url</th>
-				<th>Keywords</th>
+				<th>Rank</th>
+				<th>Page Title</th>
+				<th>Focus Ratio</th>
+				<th>Active Ratio</th>
+				<th>Time Spent</th>
+				<th>Expected Average Ad Value</th>
 			</tr>
 		</thead>
 		<tbody>
 			<c:forEach items="${pages}" var="page">
 				<tr>
-					<td>${page.id}</td>
-					<td>${page.url}</td>
-					<td>
-						<c:forEach items="${page.keywords}" var="keyword">
-							<span>${keyword.keywordName}</span>
-						</c:forEach>
-					</td>
+					<td>${page.rank}</td>
+					<td>${page.title}</td>
+					<td>${page.focusRatio}</td>
+					<td>${page.activeRatio}</td>
+					<td>${page.timeSpent} seconds</td>
+					<td>$${page.dollarValue}</td>
 				</tr>
 			</c:forEach>
 		</tbody>
 	</table>
+  	</fieldset>
+	
 </div>
 </body>
+
+
+<script>
+	$('#statsDisplayTable').DataTable();
+</script>
 </html>

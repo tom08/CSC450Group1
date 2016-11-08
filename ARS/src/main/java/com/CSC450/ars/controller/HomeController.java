@@ -1,7 +1,9 @@
 package com.CSC450.ars.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,10 +13,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.CSC450.ars.domain.AdLocationVisit;
 import com.CSC450.ars.domain.Keyword;
 import com.CSC450.ars.domain.Page;
+import com.CSC450.ars.domain.StatDisplay;
 import com.CSC450.dao.impl.ARSDatabaseUtil;
 import com.CSC450.dao.impl.AdLocationVisitDao;
 import com.CSC450.dao.impl.KeywordDao;
@@ -44,31 +48,53 @@ public class HomeController {
 		return "dashboard";
 	}
 	
+	@RequestMapping(value = "/rate_existing", method = RequestMethod.GET)
+	public String rateExisting(Model model) throws SQLException {
+		return "rate_existing";
+	}
+	
 	@RequestMapping(value = "/viewPages", method = RequestMethod.GET)
 	public String viewPages(Model model) throws SQLException {
-		List<Page> pages = pageDao.getAll();
-		for(Page page: pages) {
-			page.setKeywords(keywordDao.getKeywordsByPageId(page.getId()));
-		}
+		//List<StatDisplay> pages = blah_blah_calculate_page_stats_blah();
+		//model.addAttribute("pages", pages);
+		StatDisplay display = new StatDisplay(4, "Test", .5, .5, 80000, 600, "A");
+		List<StatDisplay> pages = new ArrayList<StatDisplay>();
+		pages.add(display);
 		model.addAttribute("pages", pages);
 		return "pages";
 	}
 	
-	@RequestMapping(value="save_page", method=RequestMethod.POST)
-	public String savePage(Model model, @ModelAttribute("page") Page page, BindingResult result) throws SQLException {
-		pageDao.save(page);
-		return "redirect:/";
+	@RequestMapping(value = "/viewAds", method = RequestMethod.GET)
+	public String viewAds(Model model) {
+		//List<StatDisplay> ads = blah_blah_calculate_ad_stats_blah();
+		//model.addAttribute("ads", ads);
+		StatDisplay display = new StatDisplay(1, "This is a test and a blah blah blah", .5, .5, 80000, 600, "B");
+		List<StatDisplay> ads = new ArrayList<StatDisplay>();
+		for(int i = 0; i < 10; i++) {
+		ads.add(display);
+		}
+		model.addAttribute("ads", ads);
+		return "ads";
 	}
 	
-	@RequestMapping(value="save_ad_location_visit", method=RequestMethod.POST)
-	public String savePage(Model model, @ModelAttribute("adLocationVisit") AdLocationVisit adLocationVisit, BindingResult result) throws SQLException {
-		adLVDao.save(adLocationVisit);
-		return "redirect:/";
+	@RequestMapping(value = "/viewKeywords", method = RequestMethod.GET)
+	public String viewKeywords(Model model) {
+		//List<StatDisplay> keywords = blah_blah_calculate_ad_stats_blah();
+		//model.addAttribute("keywords", keywords);
+		return "keywords";
 	}
 	
-	@RequestMapping(value="save_keyword", method=RequestMethod.POST)
-	public String saveKeyword(Model model, @ModelAttribute("keyword") Keyword keyword, BindingResult result) throws SQLException {
-		keywordDao.save(keyword);
+	@RequestMapping(value = "/settings", method = RequestMethod.GET)
+	public String settings(Model model) throws SQLException {
+		return "settings";
+	}
+	
+	@RequestMapping(value = "/save_settings", method = RequestMethod.POST)
+	public String saveSettings(Model model, @RequestParam("activeRatioWeight") Double activeRatioWeight,
+			@RequestParam("focusRatioWeight") Double focusRatioWeight) {
+		//Save weights here - or whatever we're going to do with them. Do it here.
+		System.out.println("activeRatioWeight: " + activeRatioWeight);
+		System.out.println("focusRatioWeight: " + focusRatioWeight);
 		return "redirect:/";
 	}
 	
