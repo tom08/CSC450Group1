@@ -45,6 +45,35 @@ public class PageDao {
 		stmt.setLong(1, page.getId());
 		stmt.setString(2, page.getUrl());
 		stmt.execute();
+		conn.close();
+
+		ARSDatabaseUtil.updatePage_KeywordTablePageId(getLatestId(), page.getKeywords());
+	}
+	
+	public long count() throws SQLException {
+		long count = 0;
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select COUNT(id) count from " + ARSDatabaseUtil.PAGE;
+		stmt = conn.prepareStatement(query);
+		ResultSet rs = stmt.executeQuery();
+		if(rs.next()) {
+			count = rs.getLong("count");
+		}
+		conn.close();
+		return count;
+	}
+	
+	public long getLatestId() throws SQLException {
+		long latest = 0;
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select MAX(id) max from " + ARSDatabaseUtil.PAGE;
+		stmt = conn.prepareStatement(query);
+		ResultSet rs = stmt.executeQuery();
+		if(rs.next()) {
+			latest = rs.getLong("max");
+		}
+		conn.close();
+		return latest;
 	}
 	
 	public Page getById(long id) throws SQLException {
@@ -58,42 +87,22 @@ public class PageDao {
 		if(rs.next()) {
 			page = ARSDatabaseUtil.createPage(rs);
 		}
+		conn.close();
 		return page;
 	}
-	/*private EntityManagerFactory emFactory;
 	
-	@PersistenceContext
-	private EntityManager entityManager;
-	
-	public PageDao() {
-		emFactory = Persistence.createEntityManagerFactory("persistenceUnit");
-		entityManager = emFactory.createEntityManager();
+	public List<Page> getPagesByKeywordId(long keywordId) throws SQLException {
+		List<Page> pages = new ArrayList<Page>();
+		conn = ARSDatabaseUtil.getConnection();
+		query = "SELECT p.id, p.url FROM addata.page_keywords pk join addata.page p on p.id = pk.page where pk.keywords = ?";
+		stmt = conn.prepareStatement(query);
+		stmt.setLong(1, keywordId);
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			pages.add(ARSDatabaseUtil.createPage(rs));
+		}
+		conn.close();
+		return pages;
 	}
-	
-	@Transactional
-	public List<Page> getAll(){
-		return entityManager.createQuery("FROM Page", Page.class).getResultList();
-	}
-	
-	@Transactional
-	public void save(Page page){
-		entityManager.getTransaction().begin();
-		entityManager.merge(page);
-		entityManager.getTransaction().commit();
-	}
-	
-	@Transactional
-	public void deleteById(long pageId) {
-		entityManager.getTransaction().begin();
-		entityManager.createQuery("DELETE FROM Page p WHERE p.id = :id").setParameter("id", pageId).executeUpdate();
-		entityManager.getTransaction().commit();
-	}
-
-	
-	@Transactional
-	public Page getById(long id){
-		TypedQuery<Page> query = entityManager.createQuery("SELECT p FROM Page p WHERE p.id = :id", Page.class);
-		return query.setParameter("id", id).getSingleResult();
-	}*/
 	
 }

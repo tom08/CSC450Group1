@@ -39,6 +39,19 @@ public class KeywordDao {
 		return keywords;
 	}
 	
+	public long getLatestId() throws SQLException {
+		long latest = 0;
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select MAX(id) max from " + ARSDatabaseUtil.KEYWORD;
+		stmt = conn.prepareStatement(query);
+		ResultSet rs = stmt.executeQuery();
+		if(rs.next()) {
+			latest = rs.getLong("max");
+		}
+		conn.close();
+		return latest;
+	}
+	
 	public void save(Keyword keyword) throws SQLException {
 		conn = ARSDatabaseUtil.getConnection();
 		query = "insert into keyword values(?,?)";
@@ -46,6 +59,8 @@ public class KeywordDao {
 		stmt.setLong(1, keyword.getId());
 		stmt.setString(2, keyword.getKeywordName());
 		stmt.execute();
+		conn.close();
+		ARSDatabaseUtil.updatePage_KeywordTableKeywordId(getLatestId(), keyword.getPages());
 	}
 	
 	public Keyword getById(long id) throws SQLException {
@@ -59,28 +74,21 @@ public class KeywordDao {
 		if(rs.next()) {
 			keyword = ARSDatabaseUtil.createKeyword(rs);
 		}
+		conn.close();
 		return keyword;
 	}
 	
-/*private EntityManagerFactory emFactory;
-	
-	@PersistenceContext
-	private EntityManager entityManager;
-	
-	public KeywordDao() {
-		emFactory = Persistence.createEntityManagerFactory("persistenceUnit");
-		entityManager = emFactory.createEntityManager();
+	public List<Keyword> getKeywordsByPageId(long pageId) throws SQLException {
+		List<Keyword> keywords = new ArrayList<Keyword>();
+		conn = ARSDatabaseUtil.getConnection();
+		query = "SELECT k.id, k.keyword_name FROM addata.page_keywords pk join addata.keyword k on pk.keywords = k.id where pk.page = ?";
+		stmt = conn.prepareStatement(query);
+		stmt.setLong(1, pageId);
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			keywords.add(ARSDatabaseUtil.createKeyword(rs));
+		}
+		conn.close();
+		return keywords;
 	}
-	
-	@Transactional
-	public List<Keyword> getAll(){
-		return entityManager.createQuery("FROM Keyword", Keyword.class).getResultList();
-	}
-	
-	@Transactional
-	public void save(Keyword word){
-		entityManager.getTransaction().begin();
-		entityManager.merge(word);
-		entityManager.getTransaction().commit();
-	}*/
 }

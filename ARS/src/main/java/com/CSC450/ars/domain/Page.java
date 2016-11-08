@@ -19,7 +19,6 @@ public class Page implements Serializable{
 	
 	private long id;
 	private String url;
-	
 	private List<Keyword> keywords;
 	
 	public long getId() {

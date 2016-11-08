@@ -2,8 +2,10 @@ package com.CSC450.dao.impl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.CSC450.ars.domain.AdLocationVisit;
 import com.CSC450.ars.domain.Keyword;
@@ -18,6 +20,7 @@ public class ARSDatabaseUtil {
 	public static String AD_LOCATION_VISIT = "ad_location_visit";
 	public static String PAGE = "page";
 	public static String KEYWORD = "keyword";
+	public static String PAGE_KEYWORDS = "page_keywords";
 	
 	public static Connection getConnection() throws SQLException {
 		return DriverManager.getConnection(URL, USERNAME, PASSWORD);
@@ -47,6 +50,32 @@ public class ARSDatabaseUtil {
 		keyword.setId(rs.getLong("id"));
 		keyword.setKeywordName(rs.getString("keyword_name"));
 		return keyword;
+	}
+	
+	public static void updatePage_KeywordTablePageId(long pageId, List<Keyword> keywords) throws SQLException {
+		Connection conn = getConnection();
+		String query = "insert into " + PAGE_KEYWORDS + " values (?, ?)";
+		PreparedStatement stmt;
+		for(Keyword keyword : keywords) {
+			stmt = conn.prepareStatement(query);
+			stmt.setLong(1, keyword.getId());
+			stmt.setLong(2, pageId);
+			stmt.execute();
+		}
+		conn.close();
+	}
+	
+	public static void updatePage_KeywordTableKeywordId(long keywordId, List<Page> pages) throws SQLException {
+		Connection conn = getConnection();
+		String query = "insert into " + PAGE_KEYWORDS + " values (?, ?)";
+		PreparedStatement stmt;
+		for(Page page : pages) {
+			stmt = conn.prepareStatement(query);
+			stmt.setLong(1, keywordId);
+			stmt.setLong(2, page.getId());
+			stmt.execute();
+		}
+		conn.close();
 	}
 
 }
