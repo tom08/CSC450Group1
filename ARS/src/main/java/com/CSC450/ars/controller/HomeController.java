@@ -79,12 +79,6 @@ public class HomeController {
 		model.addAttribute("pages", pages);
 		return "pages";
 	}
-	
-	@RequestMapping(value="save_page", method=RequestMethod.POST)
-	public String savePage(Model model, @ModelAttribute("page") Page page, BindingResult result) throws SQLException {
-		pageDao.save(page);
-		return "redirect:/";
-	}
 
 	@RequestMapping(value = "/database", method = RequestMethod.GET)
 	public String database_control(){
@@ -118,18 +112,5 @@ public class HomeController {
 		model.addAttribute("adLV", adLVDao.getLatest());
 		return "view_latest";
 	}
-	
-	@RequestMapping(value="save_ad_location_visit", method=RequestMethod.POST)
-	public String savePage(Model model, @ModelAttribute("adLocationVisit") AdLocationVisit adLocationVisit, BindingResult result) throws SQLException {
-		adLVDao.save(adLocationVisit);
-		return "redirect:/";
-	}
-	
-	@RequestMapping(value="save_keyword", method=RequestMethod.POST)
-	public String saveKeyword(Model model, @ModelAttribute("keyword") Keyword keyword, BindingResult result) throws SQLException {
-		keywordDao.save(keyword);
-		return "redirect:/";
-	}
-	
 	
 }

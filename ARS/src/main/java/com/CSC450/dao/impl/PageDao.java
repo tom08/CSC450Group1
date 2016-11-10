@@ -49,7 +49,6 @@ public class PageDao {
 		stmt.setString(2, page.getUrl());
 		stmt.execute();
 		conn.close();
-
 	}
 	
 	public long count() throws SQLException {
