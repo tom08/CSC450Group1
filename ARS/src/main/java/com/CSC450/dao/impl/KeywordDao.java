@@ -11,6 +11,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.NoResultException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +62,6 @@ public class KeywordDao {
 		stmt.setString(2, keyword.getKeywordName());
 		stmt.execute();
 		conn.close();
-		ARSDatabaseUtil.updatePage_KeywordTableKeywordId(getLatestId(), keyword.getPages());
 	}
 	
 	public Keyword getById(long id) throws SQLException {
