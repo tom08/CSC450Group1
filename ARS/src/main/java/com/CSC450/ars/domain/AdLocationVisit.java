@@ -13,9 +13,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 public class AdLocationVisit implements Serializable{
-	
+
 	private static final long serialVersionUID = -6748657696577761491L;
-	
+
 	private long id;
 	private double focusRatio;
 	private double activeRatio;
@@ -40,7 +40,7 @@ public class AdLocationVisit implements Serializable{
         setPageId(adPageId);
         setPageLocation(loc);
     }
-	
+
 	public long getId() {
 		return id;
 	}
@@ -82,5 +82,9 @@ public class AdLocationVisit implements Serializable{
 	}
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
+	}
+	public double RatioFormula(double activeRatioWeight, double focusRatioWeight)
+	{
+		return activeRatio * activeRatioWeight + focusRatio * focusRatioWeight;
 	}
 }

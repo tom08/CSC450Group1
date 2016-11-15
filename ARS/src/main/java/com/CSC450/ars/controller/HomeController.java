@@ -1,6 +1,10 @@
 package com.CSC450.ars.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -17,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.CSC450.support.UpdateClient;
@@ -34,7 +39,7 @@ import com.CSC450.dao.impl.PageDao;
  */
 @Controller
 public class HomeController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	private static final String DASHBOARD = "/";
 	private PageDao pageDao = new PageDao();
@@ -42,7 +47,7 @@ public class HomeController {
 	private KeywordDao keywordDao = new KeywordDao();
 	/**
 	 * Simply selects the home view to render by returning its name.
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	@RequestMapping(value = DASHBOARD, method = RequestMethod.GET)
 	public String home(Model model) throws SQLException {
@@ -53,6 +58,7 @@ public class HomeController {
             model.addAttribute("numPages", 0);
             model.addAttribute("numAds", 0);
             model.addAttribute("numAdsTracked", 0);
+						model.addAttribute("allkeywords", keywordDao.getAll());
         }
         else{
             LocalDateTime last_updated = latest_ad.getCreatedAt().toLocalDateTime();
@@ -66,10 +72,11 @@ public class HomeController {
             model.addAttribute("numPages", pageDao.count());
             model.addAttribute("numAds", adLVDao.countDistinct());
             model.addAttribute("numAdsTracked", adLVDao.count());
+						model.addAttribute("allkeywords", keywordDao.getAll());
         }
 		return "dashboard";
 	}
-	
+
 	@RequestMapping(value = "/viewPages", method = RequestMethod.GET)
 	public String viewPages(Model model) throws SQLException {
 		List<Page> pages = pageDao.getAll();
@@ -78,6 +85,27 @@ public class HomeController {
 		}
 		model.addAttribute("pages", pages);
 		return "pages";
+	}
+
+	@RequestMapping(value="submitKeywords", method=RequestMethod.POST)
+	public String getAdloctionVists(@RequestParam("keywords") List<Long> keywords) throws SQLException {
+		Set<Page> pages = new HashSet<Page>();
+		Set<AdLocationVisit> ad_location_visits = new HashSet<AdLocationVisit>();
+		for(Long keyword: keywords){
+			pages.addAll(pageDao.getPagesByKeywordId(keyword));
+		}
+		for(Page page: pages){
+			ad_location_visits.addAll(adLVDao.getByPageId(page.getId()));
+		}
+
+		//AdLocationVisit.RatioFormula();
+		double sum = 0;
+		for(AdLocationVisit visit: ad_location_visits){
+			sum += visit.RatioFormula(0.4, 0.5);
+		}
+		double average = sum/ad_location_visits.size();
+
+		return "redirect:/";
 	}
 
 	@RequestMapping(value = "/database", method = RequestMethod.GET)
@@ -96,7 +124,7 @@ public class HomeController {
         }
         return "redirect:/";
     }
-	
+
 	@RequestMapping(value="/test_ad_location_visit/{adLVId}", method=RequestMethod.GET)
 	public String testAdLocationVisit(Model model, @PathVariable long adLVId) throws SQLException {
 		AdLocationVisit adLV = new AdLocationVisit();
@@ -106,11 +134,10 @@ public class HomeController {
 		model.addAttribute("adLocationVisit", adLV);
 		return "ad_location_visit";
 	}
-	
+
 	@RequestMapping(value="/view_latest_adLocation", method=RequestMethod.GET)
 	public String viewLatest(Model model) throws SQLException {
 		model.addAttribute("adLV", adLVDao.getLatest());
 		return "view_latest";
 	}
-	
 }
