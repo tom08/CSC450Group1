@@ -81,10 +81,14 @@ public class HomeController {
 		for(Page page: pages){
 			ad_location_visits.addAll(adLVDao.getByPageId(page.getId()));
 		}
-		for(AdLocationVisit visit: ad_location_visits){
-			System.out.println(visit.RatioFormula(0.4, 0.5));
-		}
+
 		//AdLocationVisit.RatioFormula();
+		double sum = 0;
+		for(AdLocationVisit visit: ad_location_visits){
+			sum += visit.RatioFormula(0.4, 0.5);
+		}
+		double average = sum/ad_location_visits.size();
+
 		return "redirect:/";
 	}
 }
