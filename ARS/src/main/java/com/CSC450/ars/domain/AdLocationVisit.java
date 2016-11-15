@@ -23,6 +23,23 @@ public class AdLocationVisit implements Serializable{
 	private long pageId;
 	private String pageLocation;
 	private Timestamp createdAt;
+
+	public AdLocationVisit() {}
+
+	public AdLocationVisit(
+            long adId,
+            double adFocus,
+            double adActive,
+            double adSpent,
+            long adPageId,
+            String loc){
+        setId(adId);
+        setFocusRatio(adFocus);
+        setActiveRatio(adActive);
+        setTotalSpent(adSpent);
+        setPageId(adPageId);
+        setPageLocation(loc);
+    }
 	
 	public long getId() {
 		return id;

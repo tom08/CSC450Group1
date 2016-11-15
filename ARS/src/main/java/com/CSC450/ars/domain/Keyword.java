@@ -13,6 +13,13 @@ public class Keyword {
 	
 	private long id;
 	private String keywordName;
+
+	public Keyword() {}
+
+	public Keyword(long k_id, String name){
+        setId(k_id);
+        setKeywordName(name);
+    }
 	
 	private List<Page> pages;
 	

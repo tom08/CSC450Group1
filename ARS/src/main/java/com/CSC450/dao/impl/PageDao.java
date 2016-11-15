@@ -12,12 +12,15 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.Query;
+import javax.persistence.NoResultException;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import com.CSC450.ars.domain.AdLocationVisit;
 import com.CSC450.ars.domain.Keyword;
 import com.CSC450.ars.domain.Page;
+import com.CSC450.ars.domain.Keyword;
 
 public class PageDao {
 	
@@ -46,8 +49,6 @@ public class PageDao {
 		stmt.setString(2, page.getUrl());
 		stmt.execute();
 		conn.close();
-
-		ARSDatabaseUtil.updatePage_KeywordTablePageId(getLatestId(), page.getKeywords());
 	}
 	
 	public long count() throws SQLException {

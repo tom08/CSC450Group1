@@ -1,5 +1,13 @@
 <%@include file="stdLayout.jsp" %>
 <%@ page session="false" %>
+<c:if test="${needsUpdate}">
+    <div class="alert alert-danger">
+        <h3>Your data is out of date</h3>
+        <form:form method="POST" action="database/update">
+            <input type="submit" value="Update"/>
+        </form:form>
+    </div>
+</c:if>
 
 <div class="container">
 	<fieldset class="surround">
