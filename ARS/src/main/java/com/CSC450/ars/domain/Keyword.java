@@ -10,9 +10,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 public class Keyword {
-	
+
 	private long id;
 	private String keywordName;
+	private double value;
 
 	public Keyword() {}
 
@@ -20,9 +21,9 @@ public class Keyword {
         setId(k_id);
         setKeywordName(name);
     }
-	
+
 	private List<Page> pages;
-	
+
 	public long getId() {
 		return id;
 	}
@@ -41,5 +42,11 @@ public class Keyword {
 	public void setPages(List<Page> pages) {
 		this.pages = pages;
 	}
-	
+	public void setValue(double value) {
+		this.value = value;
+	}
+	public double getValue() {
+		return value;
+	}
+
 }

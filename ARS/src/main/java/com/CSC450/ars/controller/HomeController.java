@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Collections;
+import java.util.Comparator;
 import java.io.IOException;
 import java.util.List;
 import java.time.LocalDateTime;
@@ -139,5 +141,33 @@ public class HomeController {
 	public String viewLatest(Model model) throws SQLException {
 		model.addAttribute("adLV", adLVDao.getLatest());
 		return "view_latest";
+	}
+//----------------------------------------------------------------------
+	@RequestMapping(value="avgKeywords", method=RequestMethod.POST)
+	public String getAdloctionVists() throws SQLException {
+		List<Keyword> keywords = keywordDao.getAll();
+		for(Keyword keyword: keywords){
+			Set<Page> pages = new HashSet<Page>();
+			pages.addAll(pageDao.getPagesByKeywordId(keyword.getId()));
+			Set<AdLocationVisit> ad_location_visits = new HashSet<AdLocationVisit>();
+			for(Page page: pages){
+				ad_location_visits.addAll(adLVDao.getByPageId(page.getId()));
+			}
+
+			double sum = 0;
+			for(AdLocationVisit visit: ad_location_visits){
+				sum += visit.RatioFormula(0.4, 0.5);
+			}
+			double average = sum/ad_location_visits.size();
+			keyword.setValue(average);
+		}
+
+		Collections.sort(keywords, new Comparator<Keyword>() {
+  		public int compare(Keyword c1, Keyword c2) {
+    	if (c1.getValue() > c2.getValue()) return -1;
+    	if (c1.getValue() < c2.getValue()) return 1;
+    	return 0;
+		}});
+		return "redirect:/";
 	}
 }
