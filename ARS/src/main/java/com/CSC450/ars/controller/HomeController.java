@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.CSC450.support.UpdateClient;
 
@@ -58,7 +59,7 @@ public class HomeController {
             model.addAttribute("numPages", 0);
             model.addAttribute("numAds", 0);
             model.addAttribute("numAdsTracked", 0);
-						model.addAttribute("allkeywords", keywordDao.getAll());
+            model.addAttribute("allkeywords", keywordDao.getAll());
         }
         else{
             LocalDateTime last_updated = latest_ad.getCreatedAt().toLocalDateTime();
@@ -72,7 +73,7 @@ public class HomeController {
             model.addAttribute("numPages", pageDao.count());
             model.addAttribute("numAds", adLVDao.countDistinct());
             model.addAttribute("numAdsTracked", adLVDao.count());
-						model.addAttribute("allkeywords", keywordDao.getAll());
+            model.addAttribute("allkeywords", keywordDao.getAll());
         }
 		return "dashboard";
 	}
@@ -86,9 +87,41 @@ public class HomeController {
 		model.addAttribute("pages", pages);
 		return "pages";
 	}
+    
+	@RequestMapping(value = "/estimate", method = RequestMethod.GET)
+	public String getEstimateHome(Model model){
+
+        return "estimateForm";
+    }
+
+    @RequestMapping("/get_similar_keywords/{token}")
+    @ResponseBody
+    public String getSimilarKeywords(@PathVariable String token) throws SQLException {
+        // Handle ajax search for similar keywords as the user types.
+
+        List<Keyword> keywords = keywordDao.getSimilarKeywords(token);
+
+        String html = "";
+        if(keywords.size() > 0){
+
+            // Build the html to show the similar keywords for the user to select from.
+            html += "<h4>Select Keyword(s) to add to your hypothetical advertisement</h4>";
+            for(Keyword kwd: keywords){
+                html += "<div class='alert alert-info result' data-kname='"+kwd.getKeywordName()+"' ";
+                html += "data-id='"+Long.toString(kwd.getId())+"'>";
+                html += "<h4>"+kwd.getKeywordName()+"</h4>";
+                html += "</div>";
+            }
+        }
+        else{
+            html += "<h4>No Keywords match!</h4>";
+        }
+
+        return html;
+    }
 
 	@RequestMapping(value="submitKeywords", method=RequestMethod.POST)
-	public String getAdloctionVists(@RequestParam("keywords") List<Long> keywords) throws SQLException {
+	public String getAdloctionVists(Model model, @RequestParam("keywords") List<Long> keywords) throws SQLException {
 		Set<Page> pages = new HashSet<Page>();
 		Set<AdLocationVisit> ad_location_visits = new HashSet<AdLocationVisit>();
 		for(Long keyword: keywords){
@@ -104,8 +137,16 @@ public class HomeController {
 			sum += visit.RatioFormula(0.4, 0.5);
 		}
 		double average = sum/ad_location_visits.size();
+		model.addAttribute("ad_value", average);
 
-		return "redirect:/";
+		// Get each keyword for context in displaying the result
+		Set<Keyword> kwds = new HashSet<Keyword>();
+		for(long id: keywords){
+            kwds.add(keywordDao.getById(id));
+        }
+		model.addAttribute("keywords", kwds);
+
+		return "displayEstimate";
 	}
 
 	@RequestMapping(value = "/database", method = RequestMethod.GET)
