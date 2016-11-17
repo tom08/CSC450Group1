@@ -37,7 +37,7 @@
 			legend {
 				border: none;
 				border-radius: 4px;
-				width: 5.5%;
+				width: auto;
 				background-color: #008add;
 				color: white;
 			}

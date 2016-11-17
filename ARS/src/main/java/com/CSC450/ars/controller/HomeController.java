@@ -57,8 +57,8 @@ public class HomeController {
 	public String viewPages(Model model) throws SQLException {
 		//List<StatDisplay> pages = blah_blah_calculate_page_stats_blah();
 		//model.addAttribute("pages", pages);
-		StatDisplay display = new StatDisplay(4, "Test", .5, .5, 80000, 600, "A");
-		List<StatDisplay> pages = new ArrayList<StatDisplay>();
+		StatDisplay<Page> display = new StatDisplay<Page>(4, "Test", .5, .5, 80000, 600, "A");
+		List<StatDisplay<Page>> pages = new ArrayList<StatDisplay<Page>>();
 		pages.add(display);
 		model.addAttribute("pages", pages);
 		return "pages";
@@ -68,8 +68,8 @@ public class HomeController {
 	public String viewAds(Model model) {
 		//List<StatDisplay> ads = blah_blah_calculate_ad_stats_blah();
 		//model.addAttribute("ads", ads);
-		StatDisplay display = new StatDisplay(1, "This is a test and a blah blah blah", .5, .5, 80000, 600, "B");
-		List<StatDisplay> ads = new ArrayList<StatDisplay>();
+		StatDisplay<AdLocationVisit> display = new StatDisplay<AdLocationVisit>(1, "This is a test and a blah blah blah", .5, .5, 80000, 600, "B");
+		List<StatDisplay<AdLocationVisit>> ads = new ArrayList<StatDisplay<AdLocationVisit>>();
 		for(int i = 0; i < 10; i++) {
 		ads.add(display);
 		}
