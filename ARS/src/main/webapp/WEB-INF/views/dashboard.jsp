@@ -23,15 +23,6 @@
   	</fieldset>
 </div>
 
-<%-- select and display pages --%>
-<form action="submitKeywords" method="post">
-	<select multiple name="keywords">
-		<c:forEach items="${allkeywords}" var="keyword">
-			<option value="${keyword.id}">${keyword.getKeywordName()}</option>
-		</c:forEach>
-	</select>
-	<input type="submit" value="submit">
-</form>
 
 <form method="post" action="inputParameters">
   <fieldset>
@@ -43,5 +34,6 @@
 	<input type="submit" value="Submit"/>
   </fieldset>
 </form>
+
 </body>
 </html>

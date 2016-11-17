@@ -78,11 +78,25 @@ public class KeywordDao {
 		conn.close();
 		return keyword;
 	}
+
+	public List<Keyword> getSimilarKeywords(String token) throws SQLException{
+		List<Keyword> keywords = new ArrayList<Keyword>();
+		conn = ARSDatabaseUtil.getConnection();
+		query = "SELECT id, keyword_name FROM adData.keyword WHERE keyword_name LIKE ?";
+		stmt = conn.prepareStatement(query);
+		stmt.setString(1, "%"+token+"%");
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			keywords.add(ARSDatabaseUtil.createKeyword(rs));
+		}
+		conn.close();
+		return keywords;
+    }
 	
 	public List<Keyword> getKeywordsByPageId(long pageId) throws SQLException {
 		List<Keyword> keywords = new ArrayList<Keyword>();
 		conn = ARSDatabaseUtil.getConnection();
-		query = "SELECT k.id, k.keyword_name FROM addata.page_keywords pk join addata.keyword k on pk.keywords = k.id where pk.page = ?";
+		query = "SELECT k.id, k.keyword_name FROM adData.page_keywords pk join adData.keyword k on pk.keywords = k.id where pk.page = ?";
 		stmt = conn.prepareStatement(query);
 		stmt.setLong(1, pageId);
 		ResultSet rs = stmt.executeQuery();

@@ -5,13 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Collections;
 import java.util.Comparator;
 import java.io.IOException;
-import java.util.List;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -19,19 +15,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.CSC450.support.UpdateClient;
 
 import com.CSC450.ars.domain.AdLocationVisit;
 import com.CSC450.ars.domain.Keyword;
 import com.CSC450.ars.domain.Page;
-import com.CSC450.dao.impl.ARSDatabaseUtil;
+import com.CSC450.ars.domain.StatDisplay;
 import com.CSC450.dao.impl.AdLocationVisitDao;
 import com.CSC450.dao.impl.KeywordDao;
 import com.CSC450.dao.impl.PageDao;
@@ -61,7 +56,6 @@ public class HomeController {
             model.addAttribute("numPages", 0);
             model.addAttribute("numAds", 0);
             model.addAttribute("numAdsTracked", 0);
-						model.addAttribute("allkeywords", keywordDao.getAll());
         }
         else{
             LocalDateTime last_updated = latest_ad.getCreatedAt().toLocalDateTime();
@@ -75,23 +69,94 @@ public class HomeController {
             model.addAttribute("numPages", pageDao.count());
             model.addAttribute("numAds", adLVDao.countDistinct());
             model.addAttribute("numAdsTracked", adLVDao.count());
-						model.addAttribute("allkeywords", keywordDao.getAll());
         }
 		return "dashboard";
+	}
+	
+	@RequestMapping(value = "/rate_existing", method = RequestMethod.GET)
+	public String rateExisting(Model model) throws SQLException {
+		return "rate_existing";
 	}
 
 	@RequestMapping(value = "/viewPages", method = RequestMethod.GET)
 	public String viewPages(Model model) throws SQLException {
-		List<Page> pages = pageDao.getAll();
-		for(Page page: pages) {
-			page.setKeywords(keywordDao.getKeywordsByPageId(page.getId()));
-		}
+		//List<StatDisplay> pages = blah_blah_calculate_page_stats_blah();
+		//model.addAttribute("pages", pages);
+		StatDisplay<Page> display = new StatDisplay<Page>(4, "Test", .5, .5, 80000, 600, "A");
+		List<StatDisplay<Page>> pages = new ArrayList<StatDisplay<Page>>();
+		pages.add(display);
 		model.addAttribute("pages", pages);
 		return "pages";
 	}
+    
+	@RequestMapping(value = "/estimate", method = RequestMethod.GET)
+	public String getEstimateHome(Model model){
+
+        return "estimateForm";
+    }
+
+    @RequestMapping("/get_similar_keywords/{token}")
+    @ResponseBody
+    public String getSimilarKeywords(@PathVariable String token) throws SQLException {
+        // Handle ajax search for similar keywords as the user types.
+
+        List<Keyword> keywords = keywordDao.getSimilarKeywords(token);
+
+        String html = "";
+        if(keywords.size() > 0){
+
+            // Build the html to show the similar keywords for the user to select from.
+            html += "<h4>Select Keyword(s) to add to your hypothetical advertisement</h4>";
+            for(Keyword kwd: keywords){
+                html += "<div class='alert alert-info result' data-kname='"+kwd.getKeywordName()+"' ";
+                html += "data-id='"+Long.toString(kwd.getId())+"'>";
+                html += "<h4>"+kwd.getKeywordName()+"</h4>";
+                html += "</div>";
+            }
+        }
+        else{
+            html += "<h4>No Keywords match!</h4>";
+        }
+
+        return html;
+    }
+	
+	@RequestMapping(value = "/viewAds", method = RequestMethod.GET)
+	public String viewAds(Model model) {
+		//List<StatDisplay> ads = blah_blah_calculate_ad_stats_blah();
+		//model.addAttribute("ads", ads);
+		StatDisplay<AdLocationVisit> display = new StatDisplay<AdLocationVisit>(1, "This is a test and a blah blah blah", .5, .5, 80000, 600, "B");
+		List<StatDisplay<AdLocationVisit>> ads = new ArrayList<StatDisplay<AdLocationVisit>>();
+		for(int i = 0; i < 10; i++) {
+		ads.add(display);
+		}
+		model.addAttribute("ads", ads);
+		return "ads";
+	}
+	
+	@RequestMapping(value = "/viewKeywords", method = RequestMethod.GET)
+	public String viewKeywords(Model model) {
+		//List<StatDisplay> keywords = blah_blah_calculate_ad_stats_blah();
+		//model.addAttribute("keywords", keywords);
+		return "keywords";
+	}
+	
+	@RequestMapping(value = "/settings", method = RequestMethod.GET)
+	public String settings(Model model) throws SQLException {
+		return "settings";
+	}
+	
+	@RequestMapping(value = "/save_settings", method = RequestMethod.POST)
+	public String saveSettings(Model model, @RequestParam("activeRatioWeight") Double activeRatioWeight,
+			@RequestParam("focusRatioWeight") Double focusRatioWeight) {
+		//Save weights here - or whatever we're going to do with them. Do it here.
+		System.out.println("activeRatioWeight: " + activeRatioWeight);
+		System.out.println("focusRatioWeight: " + focusRatioWeight);
+		return "redirect:/";
+	}
 
 	@RequestMapping(value="submitKeywords", method=RequestMethod.POST)
-	public String getAdloctionVists(@RequestParam("keywords") List<Long> keywords) throws SQLException {
+	public String getAdloctionVists(Model model, @RequestParam("keywords") List<Long> keywords) throws SQLException {
 		Set<Page> pages = new HashSet<Page>();
 		Set<AdLocationVisit> ad_location_visits = new HashSet<AdLocationVisit>();
 		for(Long keyword: keywords){
@@ -107,8 +172,16 @@ public class HomeController {
 			sum += visit.RatioFormula(0.4, 0.5);
 		}
 		double average = sum/ad_location_visits.size();
+		model.addAttribute("ad_value", average);
 
-		return "redirect:/";
+		// Get each keyword for context in displaying the result
+		Set<Keyword> kwds = new HashSet<Keyword>();
+		for(long id: keywords){
+            kwds.add(keywordDao.getById(id));
+        }
+		model.addAttribute("keywords", kwds);
+
+		return "displayEstimate";
 	}
 
 	@RequestMapping(value = "/database", method = RequestMethod.GET)
@@ -127,16 +200,6 @@ public class HomeController {
         }
         return "redirect:/";
     }
-
-	@RequestMapping(value="/test_ad_location_visit/{adLVId}", method=RequestMethod.GET)
-	public String testAdLocationVisit(Model model, @PathVariable long adLVId) throws SQLException {
-		AdLocationVisit adLV = new AdLocationVisit();
-		if(adLVId > 0) {
-			adLV = adLVDao.getById(adLVId);
-		}
-		model.addAttribute("adLocationVisit", adLV);
-		return "ad_location_visit";
-	}
 
 	@RequestMapping(value="/view_latest_adLocation", method=RequestMethod.GET)
 	public String viewLatest(Model model) throws SQLException {
