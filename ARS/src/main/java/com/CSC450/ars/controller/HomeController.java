@@ -55,7 +55,6 @@ public class HomeController {
             model.addAttribute("numPages", 0);
             model.addAttribute("numAds", 0);
             model.addAttribute("numAdsTracked", 0);
-            model.addAttribute("allkeywords", keywordDao.getAll());
         }
         else{
             LocalDateTime last_updated = latest_ad.getCreatedAt().toLocalDateTime();
@@ -69,7 +68,6 @@ public class HomeController {
             model.addAttribute("numPages", pageDao.count());
             model.addAttribute("numAds", adLVDao.countDistinct());
             model.addAttribute("numAdsTracked", adLVDao.count());
-            model.addAttribute("allkeywords", keywordDao.getAll());
         }
 		return "dashboard";
 	}
