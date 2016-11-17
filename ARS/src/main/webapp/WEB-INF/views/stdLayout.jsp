@@ -65,6 +65,7 @@
       <li><a href="#"><span class="glyphicon glyphicon-refresh"></span> Update</a></li>
       <li><a href="/ars/">Dash Board</a></li>
       <li><a href="/ars/rate_existing">Rate Existing</a></li>
+      <li><a href="/ars/estimate">Get Estimate</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
     	<li><a href="/ars/settings"><span class="glyphicon glyphicon-cog"></span></a></li>

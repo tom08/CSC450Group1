@@ -23,15 +23,5 @@
   	</fieldset>
 </div>
 
-<%-- select and display pages --%>
-<form action="submitKeywords" method="post">
-	<select multiple name="keywords">
-		<c:forEach items="${allkeywords}" var="keyword">
-			<option value="${keyword.id}">${keyword.getKeywordName()}</option>
-		</c:forEach>
-	</select>
-	<input type="submit" value="submit">
-</form>
-
 </body>
 </html>
