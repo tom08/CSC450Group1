@@ -13,6 +13,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.NoResultException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +53,7 @@ public class AdLocationVisitDao {
 		stmt.setLong(6, adLV.getPageId());
 		stmt.setTimestamp(7, new Timestamp(new Date().getTime()));
 		stmt.execute();
+		conn.close();
 	}
 	
 	public AdLocationVisit getById(long id) throws SQLException {
@@ -64,7 +67,49 @@ public class AdLocationVisitDao {
 		if(rs.next()) {
 			adLV = ARSDatabaseUtil.createAdLocationVisit(rs);
 		}
+		conn.close();
 		return adLV;
+	}
+	
+	public List<AdLocationVisit> getByPageId(long pageId) throws SQLException {
+		List<AdLocationVisit> adLVs = new ArrayList<AdLocationVisit>();
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select * from " + ARSDatabaseUtil.AD_LOCATION_VISIT + " where page_id = ?";
+		stmt = conn.prepareStatement(query);
+		stmt.setLong(1, pageId);
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			adLVs.add(ARSDatabaseUtil.createAdLocationVisit(rs));
+		}
+
+		conn.close();
+		return adLVs;
+	}
+	
+	public long count() throws SQLException {
+		long count = 0;
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select COUNT(id) count from " + ARSDatabaseUtil.AD_LOCATION_VISIT;
+		stmt = conn.prepareStatement(query);
+		ResultSet rs = stmt.executeQuery();
+		if(rs.next()) {
+			count = rs.getLong("count");
+		}
+		conn.close();
+		return count;
+	}
+	
+	public long countDistinct() throws SQLException {
+		long count = 0;
+		conn = ARSDatabaseUtil.getConnection();
+		query = "select COUNT(DISTINCT page_location) count from " + ARSDatabaseUtil.AD_LOCATION_VISIT;
+		stmt = conn.prepareStatement(query);
+		ResultSet rs = stmt.executeQuery();
+		if(rs.next()) {
+			count = rs.getLong("count");
+		}
+		conn.close();
+		return count;
 	}
 	
 	public AdLocationVisit getLatest() throws SQLException {
@@ -77,26 +122,7 @@ public class AdLocationVisitDao {
 		if(rs.next()) {
 			adLV = ARSDatabaseUtil.createAdLocationVisit(rs);
 		}
+		conn.close();
 		return adLV;
 	}
-	
-	/*@PersistenceContext
-	private EntityManager entityManager;
-	
-	public AdLocationVisitDao() {
-		emFactory = Persistence.createEntityManagerFactory("persistenceUnit");
-		entityManager = emFactory.createEntityManager();
-	}
-	
-	@Transactional
-	public List<AdLocationVisit> getAll(){
-		return entityManager.createQuery("FROM AdLocationVisit", AdLocationVisit.class).getResultList();
-	}
-	
-	@Transactional
-	public void save(AdLocationVisit alv){
-		entityManager.getTransaction().begin();
-		entityManager.merge(alv);
-		entityManager.getTransaction().commit();
-	}*/
 }

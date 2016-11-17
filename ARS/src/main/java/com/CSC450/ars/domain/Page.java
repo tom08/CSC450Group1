@@ -1,5 +1,6 @@
 package com.CSC450.ars.domain;
 
+import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +13,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.CascadeType;
 
 public class Page implements Serializable{
 
@@ -19,8 +23,14 @@ public class Page implements Serializable{
 	
 	private long id;
 	private String url;
-	
 	private List<Keyword> keywords;
+
+	public Page(){}
+
+	public Page(long pg_id, String pg_url){
+        setId(pg_id);
+        setUrl(pg_url);
+    }
 	
 	public long getId() {
 		return id;
@@ -34,6 +44,13 @@ public class Page implements Serializable{
 	public void setUrl(String url) {
 		this.url = url;
 	}
+    /*
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "page_keywords", joinColumns = @JoinColumn(name = "page_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "keyword_id", referencedColumnName = "id"))
+    public List<Keyword> getKeywords() {
+        return keywords;
+    }
+    */
 	public List<Keyword> getKeywords() {
 		return keywords;
 	}
@@ -41,5 +58,9 @@ public class Page implements Serializable{
 		this.keywords = keywords;
 	}
 	
-	
+	public void addKeyword(Keyword keyword){
+	    if(this.keywords == null)
+	        this.keywords = new ArrayList();
+        this.keywords.add(keyword);
+    }
 }
