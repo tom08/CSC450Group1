@@ -32,6 +32,7 @@
 			}
 			fieldset.surround {
 				margin-top: 10px;
+				padding: 10px;
 				border: 2px solid grey;
 			}
 			legend {
