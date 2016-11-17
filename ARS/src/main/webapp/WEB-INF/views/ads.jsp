@@ -1,16 +1,15 @@
 <%@include file="stdLayout.jsp" %>
 <%@ page session="false" %>
 
-
-
 <div class="container">
 	<fieldset class="surround">
-	    <legend>Pages</legend>
+	    <legend>Ads</legend>
 	   	<table id="statsDisplayTable" class="table table-bordered ars-table">
 		<thead>
 			<tr>
 				<th>Rank</th>
 				<th>Page Title</th>
+				<th>Ad Location</th>
 				<th>Focus Ratio</th>
 				<th>Active Ratio</th>
 				<th>Time Spent</th>
@@ -18,14 +17,15 @@
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach items="${pages}" var="page">
+			<c:forEach items="${ads}" var="ad">
 				<tr>
-					<td>${page.rank}</td>
-					<td>${page.title}</td>
-					<td>${page.focusRatio}</td>
-					<td>${page.activeRatio}</td>
-					<td>${page.timeSpent} seconds</td>
-					<td>$${page.dollarValue}</td>
+					<td>${ad.rank}</td>
+					<td>${ad.title}</td>
+					<td>${ad.adLocation}</td>
+					<td>${ad.focusRatio}</td>
+					<td>${ad.activeRatio}</td>
+					<td>${ad.timeSpent} seconds</td>
+					<td>$${ad.dollarValue}</td>
 				</tr>
 			</c:forEach>
 		</tbody>
@@ -34,7 +34,6 @@
 	
 </div>
 </body>
-
 
 <script>
 	$('#statsDisplayTable').DataTable();
