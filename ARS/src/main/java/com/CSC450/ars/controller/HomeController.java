@@ -168,7 +168,7 @@ public class HomeController {
 		//AdLocationVisit.RatioFormula();
 		double sum = 0;
 		for(AdLocationVisit visit: ad_location_visits){
-			sum += visit.RatioFormula(0.4, 0.5);
+			sum += visit.RatioFormula(0.4, 0.5) / 100;
 		}
 		double average = sum/ad_location_visits.size();
 		model.addAttribute("ad_value", average);

@@ -27,7 +27,7 @@ public class UpdateClient {
 	private ARSDatabaseUtil dbUtil = new ARSDatabaseUtil();
 
     public UpdateClient(){
-        address = "127.0.0.1";
+        address = "li107-234.members.linode.com";
     }
 
     private void saveKeyword(String[] data) throws SQLException{
@@ -99,22 +99,26 @@ public class UpdateClient {
             }
             if(type.equals("PAGE")){
                 try{
-                    savePage(data);
+                    if(data.length > 1)
+                        savePage(data);
                 } catch(SQLException ex){}
             }
             else if(type.equals("AD")){
                 try{
-                    saveAdLocationVisit(data);
+                    if(data.length > 5)
+                        saveAdLocationVisit(data);
                 } catch(SQLException ex){}
             }
             else if(type.equals("KEY")){
                 try{
-                    saveKeyword(data);
+                    if(data.length > 1)
+                        saveKeyword(data);
                 } catch(SQLException ex){}
             }
             else if(type.equals("KPR")){
                 try{
-                    saveRelationship(data);
+                    if(data.length > 1)
+                        saveRelationship(data);
                 } catch(SQLException ex){}
             }
         }
