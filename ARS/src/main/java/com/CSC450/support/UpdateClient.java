@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import com.CSC450.ars.domain.Page;
 import com.CSC450.dao.impl.PageDao;
@@ -76,13 +77,21 @@ public class UpdateClient {
         }
     }
 
-    public void connectToServer() throws IOException {
+    public void connectToServer() throws IOException, SQLException {
 
         Socket socket = new Socket(address, 12000);
         in = new BufferedReader(
             new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
-        out.println("UPDATE");
+        AdLocationVisit last_ad = adLocationVisitDao.getLatest();
+        String last_updated_string = "";
+        if(last_ad != null){
+            Timestamp last_updated;
+            last_updated = last_ad.getCreatedAt();
+            last_updated_string = last_updated.toString();
+        }
+        out.println("UPDATE,,"+last_updated_string);
+        out.println("UPDATE,,"+last_updated_string);
         String msg = in.readLine();
         String type = "";
         String[] data = msg.split(",,");

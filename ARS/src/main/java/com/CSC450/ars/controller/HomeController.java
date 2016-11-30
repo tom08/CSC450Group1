@@ -197,6 +197,9 @@ public class HomeController {
         catch(IOException e){
             return "redirect:/database";
         }
+        catch(SQLException e){
+            return "redirect:/database";
+        }
         return "redirect:/";
     }
 
