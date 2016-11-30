@@ -1,13 +1,22 @@
 package com.CSC450.ars.controller;
 
 import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Collections;
 import java.util.Comparator;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.io.FileInputStream;
+import java.io.InputStream;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -31,7 +40,12 @@ import com.CSC450.dao.impl.AdLocationVisitDao;
 import com.CSC450.dao.impl.KeywordDao;
 import com.CSC450.dao.impl.PageDao;
 
-import javax.json.*;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonNumber;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonWriter;
 /**
  * Handles requests for the application home page.
  */
@@ -43,6 +57,7 @@ public class HomeController {
 	private PageDao pageDao = new PageDao();
 	private AdLocationVisitDao adLVDao = new AdLocationVisitDao();
 	private KeywordDao keywordDao = new KeywordDao();
+	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 * @throws SQLException
@@ -148,15 +163,29 @@ public class HomeController {
 	
 	@RequestMapping(value = "/save_settings", method = RequestMethod.POST)
 	public String saveSettings(Model model, @RequestParam("activeRatioWeight") Double activeRatioWeight,
-			@RequestParam("focusRatioWeight") Double focusRatioWeight) {
+			@RequestParam("focusRatioWeight") Double focusRatioWeight, @RequestParam("min") double min_value, @RequestParam("max") double max_value) throws IOException {
 		//Save weights here - or whatever we're going to do with them. Do it here.
-		System.out.println("activeRatioWeight: " + activeRatioWeight);
-		System.out.println("focusRatioWeight: " + focusRatioWeight);
+		
+		JsonObject configFile = Json.createObjectBuilder()
+				.add("activeRatioWeight", activeRatioWeight)
+				.add("focusRatioWeight", focusRatioWeight)
+				.add("min", min_value)
+				.add("max", max_value)
+				.build();
+		JsonNumber test0 = configFile.getJsonNumber("min");
+		double minValue = test0.doubleValue();
+		OutputStream outputFile = new FileOutputStream("./ARSConfigFile.txt");
+		JsonWriter writer = Json.createWriter(outputFile);
+		writer.writeObject(configFile);
+		writer.close();
+		
+		
 		return "redirect:/";
 	}
-
+	
+	
 	@RequestMapping(value="submitKeywords", method=RequestMethod.POST)
-	public String getAdloctionVists(Model model, @RequestParam("keywords") List<Long> keywords) throws SQLException {
+	public String getAdloctionVists(Model model, @RequestParam("keywords") List<Long> keywords) throws SQLException, IOException {
 		Set<Page> pages = new HashSet<Page>();
 		Set<AdLocationVisit> ad_location_visits = new HashSet<AdLocationVisit>();
 		for(Long keyword: keywords){
@@ -172,7 +201,18 @@ public class HomeController {
 			sum += visit.RatioFormula(0.4, 0.5);
 		}
 		double average = sum/ad_location_visits.size();
-		model.addAttribute("ad_value", average);
+		
+		InputStream inputFile = new FileInputStream("./ARSConfigFile.txt");
+		JsonReader jsonReader = Json.createReader(inputFile);
+		JsonObject jsonObject = jsonReader.readObject();
+		jsonReader.close();
+		inputFile.close();
+		JsonNumber minNum = jsonObject.getJsonNumber("min");
+		double minValue = minNum.doubleValue();
+		JsonNumber maxNum = jsonObject.getJsonNumber("min");
+		double maxValue = maxNum.doubleValue();
+		double dollarValue = minValue + (average * (maxValue - minValue));
+		model.addAttribute("ad_value", dollarValue);
 
 		// Get each keyword for context in displaying the result
 		Set<Keyword> kwds = new HashSet<Keyword>();

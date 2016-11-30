@@ -24,16 +24,7 @@
 </div>
 
 
-<form method="post" action="inputParameters">
-  <fieldset>
-	<legend>Base Rate Coefficients</legend>
-	<label class="heading" for="name">Min Value</label>
-		<input type="text" name="name" id="name" size="10" autofocus /> <br />
-	<label class="heading" for="name">Max Value</label>
-		<input type="text" name="name" id="name" size="10" /><br />
-	<input type="submit" value="Submit"/>
-  </fieldset>
-</form>
+
 
 </body>
 </html>
