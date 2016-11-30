@@ -62,7 +62,7 @@
       <a class="navbar-brand" href="/ars/">ARS</a>
     </div>
     <ul class="nav navbar-nav">
-      <li><a href="#"><span class="glyphicon glyphicon-refresh"></span> Update</a></li>
+      <li><a href="/ars/database"><span class="glyphicon glyphicon-refresh"></span> Update</a></li>
       <li><a href="/ars/">Dash Board</a></li>
       <li><a href="/ars/rate_existing">Rate Existing</a></li>
       <li><a href="/ars/estimate">Get Estimate</a></li>
