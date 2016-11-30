@@ -209,7 +209,7 @@ public class HomeController {
 		inputFile.close();
 		JsonNumber minNum = jsonObject.getJsonNumber("min");
 		double minValue = minNum.doubleValue();
-		JsonNumber maxNum = jsonObject.getJsonNumber("min");
+		JsonNumber maxNum = jsonObject.getJsonNumber("max");
 		double maxValue = maxNum.doubleValue();
 		double dollarValue = minValue + (average * (maxValue - minValue));
 		model.addAttribute("ad_value", dollarValue);
