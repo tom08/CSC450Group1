@@ -6,14 +6,22 @@
 	    <legend>Settings</legend>
 	   	<form action="/ars/save_settings" method="POST">
 	   		<label for="activeRatioWeight">Active Ratio Weight</label>
-	   		<input id="active" type="text" name="activeRatioWeight"/><br>
+	   		<input id="active" type="text" name="activeRatioWeight" autofocus/><br>
 	   		<label for="activeRatioWeight">Focus Ratio Weight</label>
-	   		<input id="focus" type="text" name="focusRatioWeight"/>
+	   		<input id="focus" type="text" name="focusRatioWeight"/> <br />
+	   		<label for="min">Min Value</label> 
+				<input type="text" name="min" id="minimum" size="10" /> <br />
+			<label for="name">Max Value</label>
+				<input type="text" name="max" id="maximum" size="10" /><br />
 	   		<button type="submit" class="btn btn-primary">Submit</button>
 	   	</form>
   	</fieldset>
 	
 </div>
+
+<br />
+
+
 </body>
 
 <script>
@@ -27,3 +35,4 @@
 	});
 </script>
 </html>
+
