@@ -15,6 +15,8 @@ public class Keyword {
 	private String keywordName;
 	private double value;
 	private double dollarValue;
+	private double activeRatio;
+	private double focusRatio;
 
 	public Keyword() {}
 
@@ -56,6 +58,22 @@ public class Keyword {
 
 	public void setDollarValue(double dollarValue) {
 		this.dollarValue = dollarValue;
+	}
+
+	public double getActiveRatio() {
+		return activeRatio;
+	}
+
+	public void setActiveRatio(double activeRatio) {
+		this.activeRatio = activeRatio;
+	}
+
+	public double getFocusRatio() {
+		return focusRatio;
+	}
+
+	public void setFocusRatio(double focusRatio) {
+		this.focusRatio = focusRatio;
 	}
 
 }

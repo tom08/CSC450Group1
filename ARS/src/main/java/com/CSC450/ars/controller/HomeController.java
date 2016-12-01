@@ -221,19 +221,26 @@ public class HomeController {
 			Double activeRatioWeight = configFile.get(ARSConfigFile.ACTIVE);
 			Double focusRatioWeight = configFile.get(ARSConfigFile.FOCUS);
 			double sum = 0;
+			double focusSum = 0;
+			double activeSum = 0;
 			for(AdLocationVisit visit: ad_location_visits){
+				focusSum+= Math.abs(visit.getFocusRatio());
+				activeSum += visit.getActiveRatio();
 				sum += visit.RatioFormula(activeRatioWeight, focusRatioWeight) / 100;
 			}
-			double average = sum/ad_location_visits.size();
+			double average = sum == 0 ? 0 : sum/ad_location_visits.size();
+			double focusAvg = focusSum / ad_location_visits.size();
+			double activeAvg = activeSum / ad_location_visits.size();
+			keyword.setActiveRatio(activeAvg);
+			keyword.setFocusRatio(focusAvg);
 			keyword.setValue(average);
 			keyword.setDollarValue(generateDollarValue(average));
 		}
 
 		Collections.sort(keywords, new Comparator<Keyword>() {
   		public int compare(Keyword c1, Keyword c2) {
-  			System.out.println("Left: " + c1.getValue() + " Right: " + c2.getValue() );
-	    	if (c1.getValue() > c2.getValue()) return -1;
-	    	if (c1.getValue() < c2.getValue()) return 1;
+	    	if (c1.getValue() < c2.getValue()) return -1;
+	    	if (c1.getValue() > c2.getValue()) return 1;
 	    	return 0;
 		}});
 		return keywords;

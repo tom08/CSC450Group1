@@ -23,16 +23,5 @@
 
 
 </body>
-
-<script>
-	$('#active').keypress(function() {
-		var activeRatio = this.value;
-		if(!activeRatio.includes(".")) {
-			activeRatio = "." + activeRatio;
-			this.value = activeRatio;
-		}
-		$('#focus').val(String(1 - parseFloat($('#active').val())));
-	});
-</script>
 </html>
 

@@ -9,19 +9,19 @@
 			<tr>
 				<th>Rank</th>
 				<th>Keyword Name</th>
-				<th>Focus Ratio</th>
-				<th>Active Ratio</th>
+				<th>Average Focus Ratio</th>
+				<th>Average Active Ratio</th>
 				<th>Expected Dollar Value</th>
 			</tr>
 		</thead>
 		<tbody>
 			<c:forEach items="${keywords}" var="keyword">
 				<tr>
-					<td>${keyword.value}</td>
+					<td><fmt:formatNumber value="${keyword.value * 10}" maxFractionDigits="2"/></td>
 					<td>${keyword.keywordName}</td>
-					<td>${keyword.focusRatio}</td>
-					<td>${keyword.activeRatio}</td>
-					<td>$${keyword.dollarValue}</td>
+					<td><fmt:formatNumber value="${keyword.focusRatio}" maxFractionDigits="2"/></td>
+					<td><fmt:formatNumber value="${keyword.activeRatio}" maxFractionDigits="2"/></td>
+					<td>$<fmt:formatNumber value="${keyword.dollarValue}" maxFractionDigits="2"/></td>
 				</tr>
 			</c:forEach>
 		</tbody>
