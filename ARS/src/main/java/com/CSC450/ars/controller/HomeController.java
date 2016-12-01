@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.CSC450.support.ARSConfigFile;
 import com.CSC450.support.UpdateClient;
 
 import com.CSC450.ars.domain.AdLocationVisit;
@@ -95,12 +96,7 @@ public class HomeController {
 
 	@RequestMapping(value = "/viewPages", method = RequestMethod.GET)
 	public String viewPages(Model model) throws SQLException {
-		//List<StatDisplay> pages = blah_blah_calculate_page_stats_blah();
-		//model.addAttribute("pages", pages);
-		StatDisplay<Page> display = new StatDisplay<Page>(4, "Test", .5, .5, 80000, 600, "A");
-		List<StatDisplay<Page>> pages = new ArrayList<StatDisplay<Page>>();
-		pages.add(display);
-		model.addAttribute("pages", pages);
+		model.addAttribute("pages", pageDao.getAll());
 		return "pages";
 	}
     
@@ -136,23 +132,9 @@ public class HomeController {
         return html;
     }
 	
-	@RequestMapping(value = "/viewAds", method = RequestMethod.GET)
-	public String viewAds(Model model) {
-		//List<StatDisplay> ads = blah_blah_calculate_ad_stats_blah();
-		//model.addAttribute("ads", ads);
-		StatDisplay<AdLocationVisit> display = new StatDisplay<AdLocationVisit>(1, "This is a test and a blah blah blah", .5, .5, 80000, 600, "B");
-		List<StatDisplay<AdLocationVisit>> ads = new ArrayList<StatDisplay<AdLocationVisit>>();
-		for(int i = 0; i < 10; i++) {
-		ads.add(display);
-		}
-		model.addAttribute("ads", ads);
-		return "ads";
-	}
-	
 	@RequestMapping(value = "/viewKeywords", method = RequestMethod.GET)
-	public String viewKeywords(Model model) {
-		//List<StatDisplay> keywords = blah_blah_calculate_ad_stats_blah();
-		//model.addAttribute("keywords", keywords);
+	public String viewKeywords(Model model) throws SQLException, IOException {
+		model.addAttribute("keywords", getSortedKeywords());
 		return "keywords";
 	}
 	
@@ -165,18 +147,10 @@ public class HomeController {
 	public String saveSettings(Model model, @RequestParam("activeRatioWeight") Double activeRatioWeight,
 			@RequestParam("focusRatioWeight") Double focusRatioWeight, @RequestParam("min") double min_value, @RequestParam("max") double max_value) throws IOException {
 		//Save weights here - or whatever we're going to do with them. Do it here.
-		
-		JsonObject configFile = Json.createObjectBuilder()
-				.add("activeRatioWeight", activeRatioWeight)
-				.add("focusRatioWeight", focusRatioWeight)
-				.add("min", min_value)
-				.add("max", max_value)
-				.build();
-		
-		OutputStream outputFile = new FileOutputStream("./ARSConfigFile.txt");
-		JsonWriter writer = Json.createWriter(outputFile);
-		writer.writeObject(configFile);
-		writer.close();
+
+		ARSConfigFile configFile = new ARSConfigFile();
+		configFile.write(activeRatioWeight, focusRatioWeight, min_value, max_value);
+
 		return "redirect:/";
 	}
 	
@@ -192,24 +166,15 @@ public class HomeController {
 			ad_location_visits.addAll(adLVDao.getByPageId(page.getId()));
 		}
 
-		//AdLocationVisit.RatioFormula();
+		ARSConfigFile configFile = new ARSConfigFile();
+		Double activeRatioWeight = configFile.get(ARSConfigFile.ACTIVE);
+		Double focusRatioWeight = configFile.get(ARSConfigFile.FOCUS);
 		double sum = 0;
 		for(AdLocationVisit visit: ad_location_visits){
-			sum += visit.RatioFormula(0.4, 0.5);
+			sum += visit.RatioFormula(activeRatioWeight, focusRatioWeight);
 		}
 		double average = sum/ad_location_visits.size();
-		
-		InputStream inputFile = new FileInputStream("./ARSConfigFile.txt");
-		JsonReader jsonReader = Json.createReader(inputFile);
-		JsonObject jsonObject = jsonReader.readObject();
-		jsonReader.close();
-		inputFile.close();
-		JsonNumber minNum = jsonObject.getJsonNumber("min");
-		double minValue = minNum.doubleValue();
-		JsonNumber maxNum = jsonObject.getJsonNumber("max");
-		double maxValue = maxNum.doubleValue();
-		double dollarValue = minValue + (average * (maxValue - minValue));
-		model.addAttribute("ad_value", dollarValue);
+		model.addAttribute("ad_value", generateDollarValue(average));
 
 		// Get each keyword for context in displaying the result
 		Set<Keyword> kwds = new HashSet<Keyword>();
@@ -235,6 +200,9 @@ public class HomeController {
         catch(IOException e){
             return "redirect:/database";
         }
+        catch(SQLException e){
+            return "redirect:/database";
+        }
         return "redirect:/";
     }
 
@@ -244,8 +212,7 @@ public class HomeController {
 		return "view_latest";
 	}
 //----------------------------------------------------------------------
-	@RequestMapping(value="avgKeywords", method=RequestMethod.POST)
-	public String getAdloctionVists() throws SQLException {
+	public List<Keyword> getSortedKeywords() throws SQLException, IOException {
 		List<Keyword> keywords = keywordDao.getAll();
 		for(Keyword keyword: keywords){
 			Set<Page> pages = new HashSet<Page>();
@@ -255,20 +222,40 @@ public class HomeController {
 				ad_location_visits.addAll(adLVDao.getByPageId(page.getId()));
 			}
 
+			ARSConfigFile configFile = new ARSConfigFile();
+			Double activeRatioWeight = configFile.get(ARSConfigFile.ACTIVE);
+			Double focusRatioWeight = configFile.get(ARSConfigFile.FOCUS);
 			double sum = 0;
+			double focusSum = 0;
+			double activeSum = 0;
 			for(AdLocationVisit visit: ad_location_visits){
-				sum += visit.RatioFormula(0.4, 0.5);
+				focusSum+= visit.getFocusRatio();
+				activeSum += visit.getActiveRatio();
+				sum += visit.RatioFormula(activeRatioWeight, focusRatioWeight) / 100;
 			}
-			double average = sum/ad_location_visits.size();
+			double average = sum == 0 ? 0 : sum/ad_location_visits.size();
+			double focusAvg = focusSum / ad_location_visits.size();
+			double activeAvg = activeSum / ad_location_visits.size();
+			keyword.setActiveRatio(activeAvg);
+			keyword.setFocusRatio(focusAvg);
 			keyword.setValue(average);
+			keyword.setDollarValue(generateDollarValue(average));
 		}
 
 		Collections.sort(keywords, new Comparator<Keyword>() {
   		public int compare(Keyword c1, Keyword c2) {
-    	if (c1.getValue() > c2.getValue()) return -1;
-    	if (c1.getValue() < c2.getValue()) return 1;
-    	return 0;
+	    	if (c1.getValue() < c2.getValue()) return -1;
+	    	if (c1.getValue() > c2.getValue()) return 1;
+	    	return 0;
 		}});
-		return "redirect:/";
+		return keywords;
+	}
+	
+	public Double generateDollarValue(Double average) throws IOException {
+		ARSConfigFile configFile = new ARSConfigFile();
+		double minValue = configFile.get(ARSConfigFile.MIN);
+		double maxValue = configFile.get(ARSConfigFile.MAX);
+		double temp = minValue + (average * (maxValue - minValue));
+		return minValue + (average * (maxValue - minValue));
 	}
 }
