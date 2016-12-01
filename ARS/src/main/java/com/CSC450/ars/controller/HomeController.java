@@ -172,14 +172,11 @@ public class HomeController {
 				.add("min", min_value)
 				.add("max", max_value)
 				.build();
-		JsonNumber test0 = configFile.getJsonNumber("min");
-		double minValue = test0.doubleValue();
+		
 		OutputStream outputFile = new FileOutputStream("./ARSConfigFile.txt");
 		JsonWriter writer = Json.createWriter(outputFile);
 		writer.writeObject(configFile);
 		writer.close();
-		
-		
 		return "redirect:/";
 	}
 	
