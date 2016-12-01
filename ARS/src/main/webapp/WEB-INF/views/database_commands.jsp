@@ -1,16 +1,13 @@
 <%@include file="stdLayout.jsp" %>
 <%@ page session="false" %>
-<html>
-<head>
-	<title>Update Database</title>
-</head>
-<body>
-<h1>
-    Update Database
-</h1>
+<div class="container">
+    <h1>
+        Update Database
+    </h1>
 
-<form:form method="POST" action="database/update">
-    <input type="submit" value="Update"/>
-</form:form>
+    <form:form method="POST" action="database/update" class="form">
+        <input class="btn btn-success" type="submit" value="Update"/>
+    </form:form>
+</div>
 </body>
 </html>

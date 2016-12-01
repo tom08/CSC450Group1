@@ -198,6 +198,9 @@ public class HomeController {
         catch(IOException e){
             return "redirect:/database";
         }
+        catch(SQLException e){
+            return "redirect:/database";
+        }
         return "redirect:/";
     }
 
@@ -224,7 +227,7 @@ public class HomeController {
 			double focusSum = 0;
 			double activeSum = 0;
 			for(AdLocationVisit visit: ad_location_visits){
-				focusSum+= Math.abs(visit.getFocusRatio());
+				focusSum+= visit.getFocusRatio();
 				activeSum += visit.getActiveRatio();
 				sum += visit.RatioFormula(activeRatioWeight, focusRatioWeight) / 100;
 			}

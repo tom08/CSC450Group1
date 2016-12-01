@@ -85,6 +85,6 @@ public class AdLocationVisit implements Serializable{
 	}
 	public double RatioFormula(double activeRatioWeight, double focusRatioWeight)
 	{
-		return Math.abs(activeRatio) * activeRatioWeight + Math.abs(focusRatio) * focusRatioWeight;
+		return activeRatio * activeRatioWeight + focusRatio * focusRatioWeight;
 	}
 }
