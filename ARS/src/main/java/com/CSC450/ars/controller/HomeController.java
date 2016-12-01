@@ -147,8 +147,10 @@ public class HomeController {
 	public String saveSettings(Model model, @RequestParam("activeRatioWeight") Double activeRatioWeight,
 			@RequestParam("focusRatioWeight") Double focusRatioWeight, @RequestParam("min") double min_value, @RequestParam("max") double max_value) throws IOException {
 		//Save weights here - or whatever we're going to do with them. Do it here.
+
 		ARSConfigFile configFile = new ARSConfigFile();
 		configFile.write(activeRatioWeight, focusRatioWeight, min_value, max_value);
+
 		return "redirect:/";
 	}
 	

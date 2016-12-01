@@ -42,8 +42,9 @@
 				background-color: #008add;
 				color: white;
 			}
-			#minimum, #maximum {
-				background-color: yellow;
+			#settingsForm input{
+				margin-bottom: 0.5em;
+				margin-right: 0.5em;
 			}
 			.rate_existing_format {
 				text-align: center;
