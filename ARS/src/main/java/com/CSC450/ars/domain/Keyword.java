@@ -14,6 +14,7 @@ public class Keyword {
 	private long id;
 	private String keywordName;
 	private double value;
+	private double dollarValue;
 
 	public Keyword() {}
 
@@ -47,6 +48,14 @@ public class Keyword {
 	}
 	public double getValue() {
 		return value;
+	}
+
+	public double getDollarValue() {
+		return dollarValue;
+	}
+
+	public void setDollarValue(double dollarValue) {
+		this.dollarValue = dollarValue;
 	}
 
 }

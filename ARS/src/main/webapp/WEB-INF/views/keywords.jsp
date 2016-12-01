@@ -8,21 +8,19 @@
 		<thead>
 			<tr>
 				<th>Rank</th>
-				<th>Page Title</th>
+				<th>Keyword Name</th>
 				<th>Focus Ratio</th>
 				<th>Active Ratio</th>
-				<th>Time Spent</th>
-				<th>Expected Average Value</th>
+				<th>Expected Dollar Value</th>
 			</tr>
 		</thead>
 		<tbody>
 			<c:forEach items="${keywords}" var="keyword">
 				<tr>
-					<td>${keyword.rank}</td>
-					<td>${keyword.title}</td>
+					<td>${keyword.value}</td>
+					<td>${keyword.keywordName}</td>
 					<td>${keyword.focusRatio}</td>
 					<td>${keyword.activeRatio}</td>
-					<td>${keyword.timeSpent} seconds</td>
 					<td>$${keyword.dollarValue}</td>
 				</tr>
 			</c:forEach>
