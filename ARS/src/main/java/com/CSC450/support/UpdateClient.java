@@ -73,7 +73,7 @@ public class UpdateClient {
             }
         }
         if(!exists && keyword != null && page != null){
-            dbUtil.insertPage_KeywordRow(page.getId(), keyword.getId());
+            ARSDatabaseUtil.insertPage_KeywordRow(page.getId(), keyword.getId());
         }
     }
 
