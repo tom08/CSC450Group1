@@ -37,6 +37,7 @@ import com.CSC450.ars.domain.AdLocationVisit;
 import com.CSC450.ars.domain.Keyword;
 import com.CSC450.ars.domain.Page;
 import com.CSC450.ars.domain.StatDisplay;
+import com.CSC450.ars.validation.ARSValidator;
 import com.CSC450.dao.impl.AdLocationVisitDao;
 import com.CSC450.dao.impl.KeywordDao;
 import com.CSC450.dao.impl.PageDao;
@@ -144,14 +145,25 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "/save_settings", method = RequestMethod.POST)
-	public String saveSettings(Model model, @RequestParam("activeRatioWeight") Double activeRatioWeight,
-			@RequestParam("focusRatioWeight") Double focusRatioWeight, @RequestParam("min") double min_value, @RequestParam("max") double max_value) throws IOException {
-		//Save weights here - or whatever we're going to do with them. Do it here.
+	public String saveSettings(Model model, @RequestParam("activeRatioWeight") String activeRatioWeight,
+			@RequestParam("focusRatioWeight") String focusRatioWeight, @RequestParam("min") String min_value, @RequestParam("max") String max_value) throws IOException {
 
-		ARSConfigFile configFile = new ARSConfigFile();
-		configFile.write(activeRatioWeight, focusRatioWeight, min_value, max_value);
+		ARSValidator validator = new ARSValidator();
+		if(validator.validateSettings(activeRatioWeight, focusRatioWeight, min_value, max_value)) {
 
-		return "redirect:/";
+			ARSConfigFile configFile = new ARSConfigFile();
+			configFile.write(Double.parseDouble(activeRatioWeight), Double.parseDouble(focusRatioWeight), Double.parseDouble(min_value), Double.parseDouble(max_value));
+			return "redirect:/";
+		}
+		else {
+			model.addAttribute("minValue", min_value);
+			model.addAttribute("maxValue", max_value);
+			model.addAttribute("active", activeRatioWeight);
+			model.addAttribute("focus", focusRatioWeight);
+			model.addAttribute("errorMessage", validator.getErrorMessage());
+			return "settings";
+		}
+
 	}
 	
 	
@@ -206,18 +218,15 @@ public class HomeController {
         return "redirect:/";
     }
 
-	@RequestMapping(value="/view_latest_adLocation", method=RequestMethod.GET)
-	public String viewLatest(Model model) throws SQLException {
-		model.addAttribute("adLV", adLVDao.getLatest());
-		return "view_latest";
-	}
 //----------------------------------------------------------------------
 	public List<Keyword> getSortedKeywords() throws SQLException, IOException {
 		List<Keyword> keywords = keywordDao.getAll();
+		List<Keyword> keywordsWithNoData = new ArrayList<Keyword>();
 		for(Keyword keyword: keywords){
 			Set<Page> pages = new HashSet<Page>();
 			pages.addAll(pageDao.getPagesByKeywordId(keyword.getId()));
 			Set<AdLocationVisit> ad_location_visits = new HashSet<AdLocationVisit>();
+			//Find all ad location visits associated with the keyword
 			for(Page page: pages){
 				ad_location_visits.addAll(adLVDao.getByPageId(page.getId()));
 			}
@@ -228,19 +237,28 @@ public class HomeController {
 			double sum = 0;
 			double focusSum = 0;
 			double activeSum = 0;
+			
+			//Calculate averages for the keyword from associated ad location visits
 			for(AdLocationVisit visit: ad_location_visits){
 				focusSum+= visit.getFocusRatio();
 				activeSum += visit.getActiveRatio();
 				sum += visit.RatioFormula(activeRatioWeight, focusRatioWeight) / 100;
 			}
-			double average = sum == 0 ? 0 : sum/ad_location_visits.size();
-			double focusAvg = focusSum / ad_location_visits.size();
-			double activeAvg = activeSum / ad_location_visits.size();
-			keyword.setActiveRatio(activeAvg);
-			keyword.setFocusRatio(focusAvg);
-			keyword.setValue(average);
-			keyword.setDollarValue(generateDollarValue(average));
+			if(sum != 0) {
+				double average = sum/ad_location_visits.size();
+				double focusAvg = focusSum / ad_location_visits.size();
+				double activeAvg = activeSum / ad_location_visits.size();
+				keyword.setActiveRatio(activeAvg);
+				keyword.setFocusRatio(focusAvg);
+				keyword.setValue(average);
+				keyword.setDollarValue(generateDollarValue(average));
+			}
+			else {
+				keywordsWithNoData.add(keyword);
+			}
 		}
+		//Remove keywords with no data.
+		keywords.removeAll(keywordsWithNoData);
 
 		Collections.sort(keywords, new Comparator<Keyword>() {
   		public int compare(Keyword c1, Keyword c2) {
