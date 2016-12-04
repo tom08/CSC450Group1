@@ -206,16 +206,37 @@ public class HomeController {
 	@RequestMapping(value = "/database/update", method = RequestMethod.POST)
 	public String update_from_remote(){
         UpdateClient updater = new UpdateClient();
+        String message = "";
+        String url = "redirect:/";
         try{
             updater.connectToServer();
         }
         catch(IOException e){
-            return "redirect:/database";
+        	message = "There was a problem connecting to the server.";
+        	message += "<br>Message: " + e.getMessage();
+        	message += "<br>Cause (NULL if unknown): " +  e.getCause();
+        	for(int i = 0; i < e.getStackTrace().length; i++) {
+        		message += "<br>" + e.getStackTrace()[i].toString();
+        	}
+            url = "redirect:/error?message=";
         }
         catch(SQLException e){
-            return "redirect:/database";
+        	message = "There was a problem connection to the database.\n";
+        	message += "<br>Message: " + e.getMessage();
+        	message += "<br>Cause (NULL if unknown): " +  e.getCause();
+        	for(int i = 0; i < e.getStackTrace().length; i++) {
+        		message += "<br>" + e.getStackTrace()[i].toString();
+        	}
+        	
+            url = "redirect:/error?message=";
         }
-        return "redirect:/";
+        return url + message;
+    }
+	
+	@RequestMapping(value = "/error", method = RequestMethod.GET)
+	public String error(Model model, @RequestParam String message){
+		model.addAttribute("errorMessage", message);
+       return "error";
     }
 
 //----------------------------------------------------------------------
