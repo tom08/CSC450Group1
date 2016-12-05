@@ -36,7 +36,6 @@ import com.CSC450.support.UpdateClient;
 import com.CSC450.ars.domain.AdLocationVisit;
 import com.CSC450.ars.domain.Keyword;
 import com.CSC450.ars.domain.Page;
-import com.CSC450.ars.domain.StatDisplay;
 import com.CSC450.ars.validation.ARSValidator;
 import com.CSC450.dao.impl.AdLocationVisitDao;
 import com.CSC450.dao.impl.KeywordDao;
@@ -65,8 +64,9 @@ public class HomeController {
 	 * @throws SQLException
 	 */
 	@RequestMapping(value = DASHBOARD, method = RequestMethod.GET)
-	public String home(Model model) throws SQLException {
+	public String dashboard(Model model) throws SQLException {
 	    AdLocationVisit latest_ad = adLVDao.getLatest();
+		// If there is no data
 	    if(latest_ad == null){
             model.addAttribute("needsUpdate", true);
             model.addAttribute("lastUpdatedDate", "Never Updated");
@@ -78,21 +78,22 @@ public class HomeController {
             LocalDateTime last_updated = latest_ad.getCreatedAt().toLocalDateTime();
             LocalDateTime right_now = LocalDateTime.now();
             long minutes = last_updated.until(right_now, ChronoUnit.MINUTES);
-            if(minutes > 120)
+            if(minutes > 120) 
+				// If longer than 2 hours, display update banner
                 model.addAttribute("needsUpdate", true);
             else
                 model.addAttribute("needsUpdate", false);
             model.addAttribute("lastUpdatedDate", last_updated);
             model.addAttribute("numPages", pageDao.count());
-            model.addAttribute("numAds", adLVDao.countDistinct());
+            model.addAttribute("maxAdsPerPage", adLVDao.countDistinct());
             model.addAttribute("numAdsTracked", adLVDao.count());
         }
 		return "dashboard";
 	}
 	
-	@RequestMapping(value = "/rate_existing", method = RequestMethod.GET)
-	public String rateExisting(Model model) throws SQLException {
-		return "rate_existing";
+	@RequestMapping(value = "/view_existing", method = RequestMethod.GET)
+	public String viewExisting(Model model) throws SQLException {
+		return "view_existing";
 	}
 
 	@RequestMapping(value = "/viewPages", method = RequestMethod.GET)
@@ -103,15 +104,13 @@ public class HomeController {
     
 	@RequestMapping(value = "/estimate", method = RequestMethod.GET)
 	public String getEstimateHome(Model model){
-
         return "estimateForm";
     }
 
     @RequestMapping("/get_similar_keywords/{token}")
     @ResponseBody
     public String getSimilarKeywords(@PathVariable String token) throws SQLException {
-        // Handle ajax search for similar keywords as the user types.
-    	
+        // Handle ajax search for similar keywords as the user types for estimate form.
         String html = "";
         List<Keyword> keywords = keywordDao.getSimilarKeywords(token);
         if(keywords.size() > 0){
@@ -133,6 +132,10 @@ public class HomeController {
 	
 	@RequestMapping(value = "/viewKeywords", method = RequestMethod.GET)
 	public String viewKeywords(Model model) throws SQLException, IOException {
+		List<Keyword> keywords = getSortedKeywords();
+		if(keywords == null) {
+			return "redirect:/error?message=Please set Active and Focus Ratio Weights in settings";
+		}
 		model.addAttribute("keywords", getSortedKeywords());
 		return "keywords";
 	}
@@ -147,13 +150,15 @@ public class HomeController {
 			@RequestParam("focusRatioWeight") String focusRatioWeight, @RequestParam("min") String min_value, @RequestParam("max") String max_value) throws IOException {
 
 		ARSValidator validator = new ARSValidator();
+		// If all values are in the valid input domain
 		if(validator.validateSettings(activeRatioWeight, focusRatioWeight, min_value, max_value)) {
-
 			ARSConfigFile configFile = new ARSConfigFile();
+			// Save values to config file
 			configFile.write(Double.parseDouble(activeRatioWeight), Double.parseDouble(focusRatioWeight), Double.parseDouble(min_value), Double.parseDouble(max_value));
 			return "redirect:/";
 		}
 		else {
+			// Return validation errors and user input
 			model.addAttribute("minValue", min_value);
 			model.addAttribute("maxValue", max_value);
 			model.addAttribute("active", activeRatioWeight);
@@ -169,26 +174,43 @@ public class HomeController {
 	public String getAdloctionVists(Model model, @RequestParam("keywords") List<Long> keywords) throws SQLException, IOException {
 		Set<Page> pages = new HashSet<Page>();
 		Set<AdLocationVisit> ad_location_visits = new HashSet<AdLocationVisit>();
+		// Server throws 400 error if no keywords are selected
+		// Dummy keyword always passed to server with id -1 to avoid this error
 		Long throwawayKeyword = -1L;
 		
-		if(keywords.size() == 1)
-			if(keywords.get(0) == -1) {
-				model.addAttribute("errorMessage", "There are no keywords to send!");
-				return "estimateForm";
+		// If only dummy keyword exists, no data was passed
+		if(keywords.size() == 1){
+			model.addAttribute("errorMessage", "There are no keywords to send!");
+			return "estimateForm";
 			}
+			
+		// Remove dummy keyword so it isn't displayed
 		keywords.remove(throwawayKeyword);
+		
+		// Get all pages associated with each keyword
 		for(Long keyword: keywords){
 			pages.addAll(pageDao.getPagesByKeywordId(keyword));
 		}
+		
+		// Gets each ad location visit associated with each page
 		for(Page page: pages){
 			ad_location_visits.addAll(adLVDao.getByPageId(page.getId()));
 		}
 
+		// Get weights from config file.
 		ARSConfigFile configFile = new ARSConfigFile();
 		Double activeRatioWeight = configFile.get(ARSConfigFile.ACTIVE);
 		Double focusRatioWeight = configFile.get(ARSConfigFile.FOCUS);
+		
+		// If something goes wrong accessing the config file give an error message
+		if(activeRatioWeight == null || focusRatioWeight == null) {
+			return "redirect:/error?message=Please set Active and Focus Ratio Weights in settings";
+		}
+		
+		// Generate weighted averages for each keyword using ad location visits
 		double sum = 0;
 		for(AdLocationVisit visit: ad_location_visits){
+			// Divide by 100 to convert whole numbers to percentages
 			sum += visit.RatioFormula(activeRatioWeight, focusRatioWeight) / 100;
 		}
 		double average = sum/ad_location_visits.size();
@@ -211,6 +233,7 @@ public class HomeController {
 
 	@RequestMapping(value = "/database/update", method = RequestMethod.POST)
 	public String update_from_remote(){
+		// Connect to proxy server to get new data
         UpdateClient updater = new UpdateClient();
         String message = "";
         String url = "redirect:/";
@@ -223,7 +246,6 @@ public class HomeController {
         }
         catch(SQLException e){
         	message = "There was a problem connection to the database.\n";
-        	
             url = "redirect:/error?message=";
         }
         return url + message;
@@ -239,6 +261,8 @@ public class HomeController {
 	public List<Keyword> getSortedKeywords() throws SQLException, IOException {
 		List<Keyword> keywords = keywordDao.getAll();
 		List<Keyword> keywordsWithNoData = new ArrayList<Keyword>();
+		
+		// Get all pages associated with each keyword
 		for(Keyword keyword: keywords){
 			Set<Page> pages = new HashSet<Page>();
 			pages.addAll(pageDao.getPagesByKeywordId(keyword.getId()));
@@ -248,6 +272,7 @@ public class HomeController {
 				ad_location_visits.addAll(adLVDao.getByPageId(page.getId()));
 			}
 
+			// Get weight values from config file
 			ARSConfigFile configFile = new ARSConfigFile();
 			Double activeRatioWeight = configFile.get(ARSConfigFile.ACTIVE);
 			Double focusRatioWeight = configFile.get(ARSConfigFile.FOCUS);
@@ -255,12 +280,18 @@ public class HomeController {
 			double focusSum = 0;
 			double activeSum = 0;
 			
-			//Calculate averages for the keyword from associated ad location visits
+			//If there is a problem accessing config file return null to redirect to error page
+			if(activeRatioWeight == null || focusRatioWeight == null) {
+				return null;
+			}
+			//Calculate averages for each keyword from associated ad location visits
 			for(AdLocationVisit visit: ad_location_visits){
 				focusSum+= visit.getFocusRatio();
 				activeSum += visit.getActiveRatio();
+				// Divide by 100 to convert whole numbers to percentages
 				sum += visit.RatioFormula(activeRatioWeight, focusRatioWeight) / 100;
 			}
+			// If data exists for keyword, set values
 			if(sum != 0) {
 				double average = sum/ad_location_visits.size();
 				double focusAvg = focusSum / ad_location_visits.size();

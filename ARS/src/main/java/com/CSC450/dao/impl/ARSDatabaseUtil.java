@@ -21,6 +21,7 @@ public class ARSDatabaseUtil {
 	public static String PAGE = "page";
 	public static String KEYWORD = "keyword";
 	public static String PAGE_KEYWORDS = "page_keywords";
+	
 	public static Connection getConnection() throws SQLException {
 		return DriverManager.getConnection(URL, USERNAME, PASSWORD);
 	}
@@ -52,6 +53,7 @@ public class ARSDatabaseUtil {
 	}
 	
 	public static void insertPage_KeywordRow(long pageId, long keywordId) throws SQLException {
+		// inserts a row into the page-keyword relationship table
 		Connection conn = getConnection();
 		String query = "insert into " + PAGE_KEYWORDS + " values (?, ?)";
 		PreparedStatement stmt = conn.prepareStatement(query);

@@ -85,6 +85,7 @@ public class AdLocationVisit implements Serializable{
 	}
 	public double RatioFormula(double activeRatioWeight, double focusRatioWeight)
 	{
+		// Value of ad location visit = weighted average of active and focus ratios.
 		return activeRatio * activeRatioWeight + focusRatio * focusRatioWeight;
 	}
 }

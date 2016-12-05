@@ -18,7 +18,7 @@
   	<fieldset class="surround">
 	    <legend>Data</legend>
 	   	<p>Pages on Record: ${numPages}</p>
-	   	<p>Ads on Record: ${numAds}</p>
+	   	<p>Max Ads per Page: ${maxAdsPerPage}</p>
 	   	<p>Ad Visits Tracked: ${numAdsTracked}</p>
   	</fieldset>
 </div>

@@ -1,10 +1,9 @@
 package com.CSC450.ars.validation;
 
-import java.math.BigDecimal;
 
 public class ARSValidator {
 	
-	private String errorMessage;
+	private String errorMessage = "";
 	public boolean validateSettings(String activeWeight, String focusWeight, String min, String max) {
 		isDouble(min);
 		isDouble(max);
@@ -17,14 +16,14 @@ public class ARSValidator {
 		isEmptyOrNull(focusWeight);
 		isEmptyOrNull(min);
 		isEmptyOrNull(max);
-		return errorMessage == null;
+		return errorMessage == "";
 	}
 	
 	private void minConstraint(String value) {
 		Double verifiedValue = isDouble(value);
 		if(verifiedValue != null) {
 			if(verifiedValue != 0 && verifiedValue < 0.01) {
-				setErrorMessage("Min value can be 0 or greater than 0.01.");
+				addErrorMessage("Min value can be 0 or greater than 0.01.");
 			}
 		}
 	}
@@ -35,7 +34,7 @@ public class ARSValidator {
 		if(verifiedRatio1 != null && verifiedRatio2 != null) {
 			Double result = verifiedRatio1 + verifiedRatio2;
 			if(result != 1.0) {
-				setErrorMessage("The sum of the active and focus ratio weights must equal one. Your result: " + result);
+				addErrorMessage("The sum of the active and focus ratio weights must equal one. Your result: " + result);
 			}
 		}
 	}
@@ -45,26 +44,28 @@ public class ARSValidator {
 			return;
 		}
 		else {
-			setErrorMessage("No value can be empty.");
+			addErrorMessage("No value can be empty.");
 		}
 	}
 	
+	// nameOfValue and nameOfTest used for better error message
 	private void isGreaterThan(String nameOfValue, String value, String nameOfTest, String test) {
 		Double verifiedValue = isDouble(value);
 		Double verifiedTest = isDouble(test);
 		if(verifiedValue != null && verifiedTest != null) {
 			if(verifiedValue <= verifiedTest) {
-				setErrorMessage(nameOfValue + " must be greater than " + nameOfTest + ": " + test + ". You entered " + value);
+				addErrorMessage(nameOfValue + " must be greater than " + nameOfTest + ": " + test + ". You entered " + value);
 			}
 		}
 	}
 	
+	// nameOfValue and nameOfTest used for better error message
 	private void isGreaterEqualTo(String nameOfValue, String value, String nameOfTest, String test) {
 		Double verifiedValue = isDouble(value);
 		Double verifiedTest = isDouble(test);
 		if(verifiedValue != null && verifiedTest != null) {
 			if(verifiedValue < verifiedTest) {
-				setErrorMessage(nameOfValue + " must be greater than " + nameOfTest + ": " + test + ". You entered " + value);
+				addErrorMessage(nameOfValue + " must be greater than " + nameOfTest + ": " + test + ". You entered " + value);
 			}
 		}
 	}
@@ -74,14 +75,14 @@ public class ARSValidator {
 			return Double.parseDouble(value);
 		}
 		catch(NumberFormatException e) {
-			setErrorMessage(value + " is not a number.");
+			addErrorMessage(value + " is not a number.");
 			return null;
 		}
 	}
 	public String getErrorMessage() {
 		return errorMessage;
 	}
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
+	public void addErrorMessage(String errorMessage) {
+		this.errorMessage += errorMessage + "<br/>";
 	}
 }
