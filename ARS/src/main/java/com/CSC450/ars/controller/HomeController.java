@@ -189,7 +189,7 @@ public class HomeController {
 		Double focusRatioWeight = configFile.get(ARSConfigFile.FOCUS);
 		double sum = 0;
 		for(AdLocationVisit visit: ad_location_visits){
-			sum += visit.RatioFormula(activeRatioWeight, focusRatioWeight);
+			sum += visit.RatioFormula(activeRatioWeight, focusRatioWeight) / 100;
 		}
 		double average = sum/ad_location_visits.size();
 		model.addAttribute("ad_value", generateDollarValue(average));
