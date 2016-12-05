@@ -8,11 +8,11 @@ public class ARSValidator {
 	public boolean validateSettings(String activeWeight, String focusWeight, String min, String max) {
 		isDouble(min);
 		isDouble(max);
-		isGreaterEqualTo(activeWeight, "0.0");
-		isGreaterEqualTo(focusWeight, "0.0");
+		isGreaterEqualTo("Active Ratio Weight", activeWeight, "", "0.0");
+		isGreaterEqualTo("Focus Ratio Weight", focusWeight, "", "0.0");
 		minConstraint(min);
 		ratioEqualToOne(activeWeight, focusWeight);
-		isGreaterThan(max, min);
+		isGreaterThan("Max", max, "Min", min);
 		isEmptyOrNull(activeWeight);
 		isEmptyOrNull(focusWeight);
 		isEmptyOrNull(min);
@@ -49,22 +49,22 @@ public class ARSValidator {
 		}
 	}
 	
-	private void isGreaterThan(String value, String test) {
+	private void isGreaterThan(String nameOfValue, String value, String nameOfTest, String test) {
 		Double verifiedValue = isDouble(value);
 		Double verifiedTest = isDouble(test);
 		if(verifiedValue != null && verifiedTest != null) {
 			if(verifiedValue <= verifiedTest) {
-				setErrorMessage("Must be greater than " + test + ": You entered " + value);
+				setErrorMessage(nameOfValue + " must be greater than " + nameOfTest + ": " + test + ". You entered " + value);
 			}
 		}
 	}
 	
-	private void isGreaterEqualTo(String value, String test) {
+	private void isGreaterEqualTo(String nameOfValue, String value, String nameOfTest, String test) {
 		Double verifiedValue = isDouble(value);
 		Double verifiedTest = isDouble(test);
 		if(verifiedValue != null && verifiedTest != null) {
 			if(verifiedValue < verifiedTest) {
-				setErrorMessage("Must be greater than " + test + ": You entered " + value);
+				setErrorMessage(nameOfValue + " must be greater than " + nameOfTest + ": " + test + ". You entered " + value);
 			}
 		}
 	}
