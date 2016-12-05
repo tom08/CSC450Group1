@@ -8,8 +8,8 @@ public class ARSValidator {
 	public boolean validateSettings(String activeWeight, String focusWeight, String min, String max) {
 		isDouble(min);
 		isDouble(max);
-		isGreaterThan(activeWeight, "0.0");
-		isGreaterThan(focusWeight, "0.0");
+		isGreaterEqualTo(activeWeight, "0.0");
+		isGreaterEqualTo(focusWeight, "0.0");
 		minConstraint(min);
 		ratioEqualToOne(activeWeight, focusWeight);
 		isGreaterThan(max, min);
@@ -52,9 +52,19 @@ public class ARSValidator {
 	private void isGreaterThan(String value, String test) {
 		Double verifiedValue = isDouble(value);
 		Double verifiedTest = isDouble(test);
-		if(verifiedValue != null) {
+		if(verifiedValue != null && verifiedTest != null) {
 			if(verifiedValue <= verifiedTest) {
-				setErrorMessage("Must be greater than " + test + ": " + value);
+				setErrorMessage("Must be greater than " + test + ": You entered " + value);
+			}
+		}
+	}
+	
+	private void isGreaterEqualTo(String value, String test) {
+		Double verifiedValue = isDouble(value);
+		Double verifiedTest = isDouble(test);
+		if(verifiedValue != null && verifiedTest != null) {
+			if(verifiedValue < verifiedTest) {
+				setErrorMessage("Must be greater than " + test + ": You entered " + value);
 			}
 		}
 	}
