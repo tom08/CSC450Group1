@@ -219,20 +219,10 @@ public class HomeController {
         }
         catch(IOException e){
         	message = "There was a problem connecting to the server.";
-        	message += "<br>Message: " + e.getMessage();
-        	message += "<br>Cause (NULL if unknown): " +  e.getCause();
-        	for(int i = 0; i < e.getStackTrace().length; i++) {
-        		message += "<br>" + e.getStackTrace()[i].toString();
-        	}
             url = "redirect:/error?message=";
         }
         catch(SQLException e){
         	message = "There was a problem connection to the database.\n";
-        	message += "<br>Message: " + e.getMessage();
-        	message += "<br>Cause (NULL if unknown): " +  e.getCause();
-        	for(int i = 0; i < e.getStackTrace().length; i++) {
-        		message += "<br>" + e.getStackTrace()[i].toString();
-        	}
         	
             url = "redirect:/error?message=";
         }
