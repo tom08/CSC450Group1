@@ -111,12 +111,10 @@ public class HomeController {
     @ResponseBody
     public String getSimilarKeywords(@PathVariable String token) throws SQLException {
         // Handle ajax search for similar keywords as the user types.
-
-        List<Keyword> keywords = keywordDao.getSimilarKeywords(token);
-
+    	
         String html = "";
+        List<Keyword> keywords = keywordDao.getSimilarKeywords(token);
         if(keywords.size() > 0){
-
             // Build the html to show the similar keywords for the user to select from.
             html += "<h4>Select Keyword(s) to add to your hypothetical advertisement</h4>";
             for(Keyword kwd: keywords){
@@ -171,6 +169,14 @@ public class HomeController {
 	public String getAdloctionVists(Model model, @RequestParam("keywords") List<Long> keywords) throws SQLException, IOException {
 		Set<Page> pages = new HashSet<Page>();
 		Set<AdLocationVisit> ad_location_visits = new HashSet<AdLocationVisit>();
+		Long throwawayKeyword = -1L;
+		
+		if(keywords.size() == 1)
+			if(keywords.get(0) == -1) {
+				model.addAttribute("errorMessage", "There are no keywords to send!");
+				return "estimateForm";
+			}
+		keywords.remove(throwawayKeyword);
 		for(Long keyword: keywords){
 			pages.addAll(pageDao.getPagesByKeywordId(keyword));
 		}
@@ -206,16 +212,27 @@ public class HomeController {
 	@RequestMapping(value = "/database/update", method = RequestMethod.POST)
 	public String update_from_remote(){
         UpdateClient updater = new UpdateClient();
+        String message = "";
+        String url = "redirect:/";
         try{
             updater.connectToServer();
         }
         catch(IOException e){
-            return "redirect:/database";
+        	message = "There was a problem connecting to the server.";
+            url = "redirect:/error?message=";
         }
         catch(SQLException e){
-            return "redirect:/database";
+        	message = "There was a problem connection to the database.\n";
+        	
+            url = "redirect:/error?message=";
         }
-        return "redirect:/";
+        return url + message;
+    }
+	
+	@RequestMapping(value = "/error", method = RequestMethod.GET)
+	public String error(Model model, @RequestParam String message){
+		model.addAttribute("errorMessage", message);
+       return "error";
     }
 
 //----------------------------------------------------------------------

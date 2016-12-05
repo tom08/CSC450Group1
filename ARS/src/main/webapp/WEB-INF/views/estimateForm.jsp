@@ -6,6 +6,7 @@ div.result:hover{
 }
 </style>
 <div class="container">
+	<c:if test="${errorMessage ne null}"><div class="alert alert-danger">${errorMessage}</div></c:if>
     <div class="row">
         <h2 class="text-center">Estimate an Ad Value</h2>
         <p class="text-center">Pick which keywords will be on the page with the ad to get an estimated value for that ad.</p>
@@ -20,6 +21,7 @@ div.result:hover{
                 <input class="btn btn-primary" type="submit" value="Submit Keywords">
                 <hr/>
                 <select id="selected-keywords" class="hidden" multiple name="keywords">
+                	<option value="-1" selected></option>
                 </select>
                 <div id="display-selected"></div>
             </div>
