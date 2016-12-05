@@ -12,7 +12,7 @@ public class ARSValidator {
 		isGreaterThan(focusWeight, "0.0");
 		minConstraint(min);
 		ratioEqualToOne(activeWeight, focusWeight);
-		isGreaterThan(min, max);
+		isGreaterThan(max, min);
 		isEmptyOrNull(activeWeight);
 		isEmptyOrNull(focusWeight);
 		isEmptyOrNull(min);
