@@ -68,11 +68,11 @@
     <ul class="nav navbar-nav">
       <li><a href="/ars/database"><span class="glyphicon glyphicon-refresh"></span> Update</a></li>
       <li><a href="/ars/">Dash Board</a></li>
-      <li><a href="/ars/rate_existing">View Existing</a></li>
+      <li><a href="/ars/view_existing">View Existing</a></li>
       <li><a href="/ars/estimate">Get Estimate</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-    	<li><a href="/ars/settings"><span class="glyphicon glyphicon-cog"></span></a></li>
+    	<li><a href="/ars/settings">Settings <span class="glyphicon glyphicon-cog"></span></a></li>
     </ul>
   </div>
 </nav>

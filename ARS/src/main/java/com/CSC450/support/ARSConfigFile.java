@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.json.Json;
+import javax.json.JsonException;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -22,6 +23,7 @@ public class ARSConfigFile {
 	
 	public ARSConfigFile() {}
 	public void write(Double activeRatioWeight, Double focusRatioWeight, Double minValue, Double maxValue) throws FileNotFoundException {
+		// write all config settings to text file
 		JsonObject configFile = Json.createObjectBuilder()
 				.add(ACTIVE, activeRatioWeight)
 				.add(FOCUS, focusRatioWeight)
@@ -34,13 +36,25 @@ public class ARSConfigFile {
 		writer.close();
 	}
 	
-	public Double get(String key) throws IOException {
-		InputStream inputFile = new FileInputStream(filename);
-		JsonReader jsonReader = Json.createReader(inputFile);
-		JsonObject jsonObject = jsonReader.readObject();
-		jsonReader.close();
-		inputFile.close();
-		return jsonObject.getJsonNumber(key).doubleValue();
+	public Double get(String key) {
+		// Returns config value associated with specified key
+		try {
+			InputStream inputFile = new FileInputStream(filename);
+			JsonReader jsonReader = Json.createReader(inputFile);
+			JsonObject jsonObject = jsonReader.readObject();
+			jsonReader.close();
+			inputFile.close();
+			return jsonObject.getJsonNumber(key).doubleValue();
+		}
+		catch(FileNotFoundException e) {
+			return null;
+		}
+		catch(IOException e) {
+			return null;
+		}
+		catch(JsonException e) {
+			return null;
+		}
 	}
 
 }

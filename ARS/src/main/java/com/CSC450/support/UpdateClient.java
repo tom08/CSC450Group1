@@ -32,6 +32,7 @@ public class UpdateClient {
     }
 
     private void saveKeyword(String[] data) throws SQLException{
+		// Check for existing keyword
         if(keywordDao.getById(Long.parseLong(data[0])) == null){
             Keyword kwd = new Keyword(Long.parseLong(data[0]), data[1]);
             keywordDao.save(kwd);
@@ -39,6 +40,7 @@ public class UpdateClient {
     }
 
     private void savePage(String[] data) throws SQLException{
+		// Check for existing page
         if(pageDao.getById(Long.parseLong(data[0])) == null){
             Page page = new Page(Long.parseLong(data[0]), data[1]);
             pageDao.save(page);
@@ -46,6 +48,7 @@ public class UpdateClient {
     }
 
     private void saveAdLocationVisit(String[] data) throws SQLException{
+		// Check for existing AdLocationVisit
         if(adLocationVisitDao.getById(Long.parseLong(data[0])) == null){
             AdLocationVisit visit = new AdLocationVisit(
                     Long.parseLong(data[0]),
@@ -64,8 +67,10 @@ public class UpdateClient {
         long keyword_id = Long.parseLong(data[0]);
         Page page = pageDao.getById(page_id);
         Keyword keyword = keywordDao.getById(keyword_id);
+		// Get all keywords associated with the page
         List<Keyword> keywords = page.getKeywords();
         boolean exists = false;
+		// Makes sure keyword is not already associated with the page
         if(keywords != null && !keywords.isEmpty()){
             for(int i = 0; i < keywords.size(); i++){
                 if(keywords.get(i).getId() == keyword_id)
@@ -83,6 +88,7 @@ public class UpdateClient {
         in = new BufferedReader(
             new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
+        // Get last update time
         AdLocationVisit last_ad = adLocationVisitDao.getLatest();
         String last_updated_string = "";
         if(last_ad != null){
@@ -91,10 +97,11 @@ public class UpdateClient {
             last_updated_string = last_updated.toString();
         }
         out.println("UPDATE,,"+last_updated_string);
-        out.println("UPDATE,,"+last_updated_string);
         String msg = in.readLine();
+		// type refers to the type of database object that will be sent next
         String type = "";
         String[] data = msg.split(",,");
+		// if first argument "TYPE", second arg is type of object to be sent next
         if(data[0].equals("TYPE"))
             type = data[1];
         while(msg != null) {
@@ -102,6 +109,7 @@ public class UpdateClient {
             if(msg == null)
                 break;
             data = msg.split(",,");
+			// if new Type, set new Type
             if(data[0].equals("TYPE")){
                 type = data[1];
                 continue;
@@ -112,18 +120,21 @@ public class UpdateClient {
                         savePage(data);
                 } catch(SQLException ex){}
             }
+			// Type Ad Location Visit
             else if(type.equals("AD")){
                 try{
                     if(data.length > 5)
                         saveAdLocationVisit(data);
                 } catch(SQLException ex){}
             }
+			// Type Keyword
             else if(type.equals("KEY")){
                 try{
                     if(data.length > 1)
                         saveKeyword(data);
                 } catch(SQLException ex){}
             }
+			// Type Keyword-Page Relationship
             else if(type.equals("KPR")){
                 try{
                     if(data.length > 1)
