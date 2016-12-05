@@ -30,6 +30,8 @@ div.result:hover{
     $(document).ready(function (){
         function get_keywords(search_box){
             if(search_box.val().length > 1){
+                if(search_box.val()[0] == "/")
+                     return;
                 $.ajax({
                     url:"get_similar_keywords/"+search_box.val(),
                     error:function(error){
