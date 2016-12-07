@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            <h3 class="text-center">Estimated Value</h3>
+            <h3 class="text-center">Estimated Ad Value</h3>
             <p class="text-center">$<fmt:formatNumber value="${ad_value}" maxFractionDigits="2"/></p>
             <a href="/ars/estimate">Get another estimate!</a>
         </div>
